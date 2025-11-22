@@ -15,9 +15,6 @@ You can install `marp-cli` with Homebrew or npm.
 ```bash
 # npm
 npm install -g @marp-team/marp-cli
-
-# Homebrew
-brew install marp-cli
 ```
 
 ### Setup
@@ -28,13 +25,35 @@ Install project dependencies.
 make setup
 ```
 
-### Generating Slides
+### Workflow Overview
 
-Edit `src/slides.md` to create your slides. You can generate the PDF with the following command. The output will be saved in `output/slides.pdf`.
+This project is designed so that an AI agent (e.g., Codex) generates the actual slide deck.
 
 ```bash
-make run
+# 1. You write the manuscript
+edit src/script.md
+
+# 2. AI agent reads:
+#    - src/prompt.md   (instructions)
+#    - src/script.md   (manuscript)
+#    - src/layouts/    (layout library: one layout per file)
+#    and writes the deck to:
+output/slides.md
+
+# 3. You export slides with Marp via Makefile targets
+make pdf   # output/slides.pdf
+make pptx  # output/slides.pptx
+make html  # output/slides.html
 ```
+
+The visual style is defined in `src/theme.css` and registered as the `custom-theme` theme, aligned with the `2025-business-pitch-deck` project.
+
+### Makefile Targets
+
+- `make pdf`: Generate `output/slides.pdf` from `output/slides.md` using Marp.
+- `make pptx`: Generate `output/slides.pptx`.
+- `make html`: Generate `output/slides.html`.
+- `make all`: Generate PDF, PPTX, and HTML in one shot.
 
 ### Other Commands
 

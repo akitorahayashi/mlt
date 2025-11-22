@@ -33,6 +33,7 @@ You are an AI agent that generates Marp slide decks for a business pitch. Use th
     - `src/layouts/closing/` (summary, ask)
     - `src/layouts/profile/` (team / profile visuals)
   - Each Markdown file defines one layout with a clear role and pattern (see comments at the top of each file).
+  - When reusing a layout, copy only the content inside the fenced `markdown` code block, not the surrounding backticks, so the result is valid Marp markdown.
   - Pick the most appropriate layout for each part of the manuscript (problem, solution, traction, roadmap, etc.).
   - Replace placeholders like `{{TITLE}}`, `{{PROBLEM_POINT}}`, `{{KEY_METRIC}}` with concrete content from `src/script.md`.
 - Do not create a deck of only bullet-list slides.

@@ -10,7 +10,7 @@
 
 <div class="skill-section">
   <div class="github-profile">
-    <img src="static/svg/mark-github-24.svg" alt="gitHub">
+    <img src="../static/svg/mark-github-24.svg" alt="GitHub logo">
     <span>{{GITHUB_HANDLE}}</span>
   </div>
 

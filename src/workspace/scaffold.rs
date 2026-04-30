@@ -7,6 +7,7 @@ use super::resolve;
 use super::Workspace;
 
 const DEFAULT_THEME_CSS: &str = include_str!("../assets/default.css");
+const CUSTOM_THEME_CSS: &str = include_str!("../assets/custom.css");
 const MANUSCRIPT_TEMPLATE: &str = include_str!("../assets/manuscript.md.tpl");
 const SLIDES_TEMPLATE: &str = include_str!("../assets/slides.md.tpl");
 
@@ -23,6 +24,7 @@ pub fn create(root: &Path, id: &str) -> AppResult<Workspace> {
     fs::write(deck_dir.join("assets").join(".gitkeep"), "")?;
     fs::write(deck_dir.join("artifacts").join(".gitkeep"), "")?;
     fs::write(deck_dir.join("default.css"), DEFAULT_THEME_CSS)?;
+    fs::write(deck_dir.join("custom.css"), CUSTOM_THEME_CSS)?;
     let title = humanize(id);
 
     let manuscript = MANUSCRIPT_TEMPLATE.replace("__TITLE__", &title);

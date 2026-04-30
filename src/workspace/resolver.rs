@@ -32,7 +32,7 @@ pub fn resolve(root: &Path, reference: &str) -> AppResult<Workspace> {
 
     let manuscript_path = deck_dir.join("manuscript.md");
     let slides_path = deck_dir.join("slides.md");
-    let theme_path = deck_dir.join("default.css");
+    let theme_path = deck_dir.join("theme.css");
     let artifacts_dir = deck_dir.join("artifacts");
 
     ensure_exists("Manuscript", &manuscript_path, PathKind::File)?;

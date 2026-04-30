@@ -16,14 +16,14 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
-    #[command(about = "List valid deck ids")]
+    #[command(about = "List valid deck ids", visible_alias = "ls")]
     List,
-    #[command(about = "Create a new deck scaffold")]
+    #[command(about = "Create a new deck scaffold", visible_alias = "cr")]
     Create {
         #[arg(help = "New lower-kebab-case deck id")]
         id: String,
     },
-    #[command(about = "Export deck slides into deck artifacts")]
+    #[command(about = "Export deck slides into deck artifacts", visible_alias = "r")]
     Run {
         #[arg(help = "Deck id")]
         id: String,
@@ -31,8 +31,6 @@ enum Command {
         pdf: bool,
         #[arg(long, help = "Export HTML")]
         html: bool,
-        #[arg(long, help = "Export PNG")]
-        png: bool,
         #[arg(long, help = "Export PPTX")]
         pptx: bool,
     },
@@ -74,10 +72,9 @@ fn execute_command(context: &Context, command: Command) -> AppResult<()> {
             id,
             pdf,
             html,
-            png,
             pptx,
         } => {
-            let selected_formats = select_formats(pdf, html, png, pptx);
+            let selected_formats = select_formats(pdf, html, pptx);
             let exported = run_deck::run(&context.root, &id, &selected_formats)?;
             for path in exported {
                 println!("{}", path.display());
@@ -92,16 +89,13 @@ fn exit_with_error(error: AppError) -> ! {
     std::process::exit(1);
 }
 
-fn select_formats(pdf: bool, html: bool, png: bool, pptx: bool) -> Vec<Format> {
+fn select_formats(pdf: bool, html: bool, pptx: bool) -> Vec<Format> {
     let mut formats = Vec::new();
     if pdf {
         formats.push(Format::Pdf);
     }
     if html {
         formats.push(Format::Html);
-    }
-    if png {
-        formats.push(Format::Png);
     }
     if pptx {
         formats.push(Format::Pptx);
@@ -119,17 +113,17 @@ mod tests {
 
     #[test]
     fn select_formats_defaults_to_all() {
-        assert_eq!(select_formats(false, false, false, false), Format::ALL);
+        assert_eq!(select_formats(false, false, false), Format::ALL);
     }
 
     #[test]
     fn select_formats_picks_requested_flags_in_fixed_order() {
         assert_eq!(
-            select_formats(true, false, true, false),
-            vec![Format::Pdf, Format::Png]
+            select_formats(true, false, true),
+            vec![Format::Pdf, Format::Pptx]
         );
         assert_eq!(
-            select_formats(false, true, false, true),
+            select_formats(false, true, true),
             vec![Format::Html, Format::Pptx]
         );
     }

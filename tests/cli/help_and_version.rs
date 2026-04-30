@@ -11,8 +11,11 @@ fn help_lists_primary_commands() {
         .assert()
         .success()
         .stdout(predicate::str::contains("list"))
+        .stdout(predicate::str::contains("ls"))
         .stdout(predicate::str::contains("create"))
-        .stdout(predicate::str::contains("run"));
+        .stdout(predicate::str::contains("cr"))
+        .stdout(predicate::str::contains("run"))
+        .stdout(predicate::str::contains("r"));
 }
 
 #[test]

@@ -8,7 +8,7 @@ This repository manages presentation source files by deck and exports Marp slide
 decks/<deck-id>/
   manuscript.md
   slides.md
-  default.css
+  theme.css
   assets/
   artifacts/
 src/
@@ -16,10 +16,12 @@ src/
 
 - `decks/<deck-id>/manuscript.md` stores the presentation narrative.
 - `decks/<deck-id>/slides.md` stores the Marp-ready slide markdown.
-- `decks/<deck-id>/default.css` stores the deck-local Marp theme.
+- `decks/<deck-id>/theme.css` stores deck-local overrides layered on the shared theme.
 - `decks/<deck-id>/assets/` stores files that belong only to that deck.
 - `decks/<deck-id>/artifacts/` stores exported files for that deck.
-- `src/assets/default.css` stores the scaffold template copied by `create`.
+- `src/assets/default.css` stores the shared theme entrypoint used on export.
+- `src/assets/theme.css.tpl` stores the empty deck override scaffold copied by `create`.
+- `src/assets/css/` stores the shared category CSS used on export.
 
 ## Prerequisites
 
@@ -44,21 +46,21 @@ just setup
 
 The repository keeps manuscript management and slide conversion separate.
 
-- `just run list` lists valid deck ids.
-- `just run create <deck-id>` scaffolds a deck directory with `default.css`.
-- `just run run <deck-id>` exports all supported formats into `decks/<deck-id>/artifacts/`.
-- `just run run <deck-id> [--pdf] [--html] [--png] [--pptx]` exports selected formats.
+- `just run ls` lists valid deck ids.
+- `just run cr <deck-id>` scaffolds a deck directory with `theme.css`, `manuscript.md`, `slides.md`, and the `assets/` / `artifacts/` directories.
+- `just run r <deck-id>` exports all supported formats into `decks/<deck-id>/artifacts/`.
+- `just run r <deck-id> [--pdf] [--html] [--pptx]` exports selected formats.
 
-`example-deck` is the starter deck under `decks/example-deck/`.
+`macos-defaults-plist` is the starter deck under `decks/macos-defaults-plist/`.
 
 ## Commands
 
 ```bash
-just run list
-just run create kyoto-go-64
-just run run example-deck
-just run run example-deck --pdf
-just run run example-deck --html --pdf
+just run ls
+just run cr kyoto-go-64
+just run r macos-defaults-plist
+just run r macos-defaults-plist --pdf
+just run r macos-defaults-plist --html --pdf
 ```
 
 ## Development

@@ -9,12 +9,16 @@
   - Deck-specific manuscript and speaking material.
 - `decks/<deck-id>/slides.md`
   - Deck-specific Marp-ready slide source.
-- `decks/<deck-id>/default.css`
-  - Deck-specific Marp theme file used on export.
+- `decks/<deck-id>/theme.css`
+  - Deck-specific overrides layered on the shared theme during export.
 - `decks/<deck-id>/artifacts/`
   - Deck-specific export outputs.
 - `src/assets/default.css`
-  - Scaffold template copied into new decks. Slide front matter uses `marp-pj-default`.
+  - Shared theme entrypoint used on export. Slide front matter uses `marp-pj-default`.
+- `src/assets/theme.css.tpl`
+  - Scaffold override template copied into new decks.
+- `src/assets/css/`
+  - Shared category CSS used on export.
 
 ## Expected Workflow
 1. Read `decks/<deck-id>/manuscript.md`.
@@ -24,10 +28,10 @@
 ## Export Interface
 - Human-facing commands go through `just run ...`.
 - Common commands:
-  - `just run list`
-  - `just run create <deck-id>`
-  - `just run run <deck-id>`
-  - `just run run <deck-id> [--pdf] [--html] [--png] [--pptx]`
+  - `just run ls`
+  - `just run cr <deck-id>`
+  - `just run r <deck-id>`
+  - `just run r <deck-id> [--pdf] [--html] [--pptx]`
 
 ## Structural Changes
 - New deck scaffolds belong under `decks/<deck-id>/`.

@@ -2,5 +2,5 @@
 target/
 
 # generated deck artifacts
-decks/*/artifacts/*
-!decks/*/artifacts/.gitkeep
+**/artifacts/*
+!**/artifacts/.gitkeep

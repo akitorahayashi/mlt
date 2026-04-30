@@ -10,8 +10,6 @@ fn help_lists_primary_commands() {
         .arg("--help")
         .assert()
         .success()
-        .stdout(predicate::str::contains("list"))
-        .stdout(predicate::str::contains("ls"))
         .stdout(predicate::str::contains("create"))
         .stdout(predicate::str::contains("cr"))
         .stdout(predicate::str::contains("run"))

@@ -1,0 +1,22 @@
+/* Test fixture theme override */
+section.title-slide {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+}
+
+section.title-slide .subtitle {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  opacity: 0.9;
+}
+
+section code {
+  background: #f5f5f5;
+  border-left: 3px solid #667eea;
+  padding: 0.5rem;
+}
+
+section h2 {
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 0.5rem;
+}

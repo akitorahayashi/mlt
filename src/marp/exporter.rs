@@ -90,7 +90,7 @@ fn export(
     Ok(output_path)
 }
 
-fn materialize_theme(theme: Option<&Path>, output_dir: &Path) -> AppResult<Option<PathBuf>> {
+pub fn materialize_theme(theme: Option<&Path>, output_dir: &Path) -> AppResult<Option<PathBuf>> {
     let Some(theme_override_path) = theme else {
         return Ok(None);
     };

@@ -11,8 +11,6 @@ decks/<deck-id>/
   default.css
   assets/
   artifacts/
-
-layouts/
 src/
 ```
 
@@ -21,7 +19,6 @@ src/
 - `decks/<deck-id>/default.css` stores the deck-local Marp theme.
 - `decks/<deck-id>/assets/` stores files that belong only to that deck.
 - `decks/<deck-id>/artifacts/` stores exported files for that deck.
-- `layouts/` stores shared slide patterns.
 - `src/assets/default.css` stores the scaffold template copied by `create`.
 
 ## Prerequisites

@@ -13,16 +13,13 @@
   - Deck-specific Marp theme file used on export.
 - `decks/<deck-id>/artifacts/`
   - Deck-specific export outputs.
-- `layouts/`
-  - Shared slide patterns grouped by story phase.
 - `src/assets/default.css`
   - Scaffold template copied into new decks. Slide front matter uses `marp-pj-default`.
 
 ## Expected Workflow
 1. Read `decks/<deck-id>/manuscript.md`.
-2. Reuse and adapt the patterns under `layouts/`.
-3. Write a coherent deck to `decks/<deck-id>/slides.md`.
-4. Keep each slide centered on one idea and avoid paragraph-heavy output.
+2. Write a coherent deck to `decks/<deck-id>/slides.md`.
+3. Keep each slide centered on one idea and avoid paragraph-heavy output.
 
 ## Export Interface
 - Human-facing commands go through `just run ...`.
@@ -33,5 +30,4 @@
   - `just run run <deck-id> [--pdf] [--html] [--png] [--pptx]`
 
 ## Structural Changes
-- Structural slide changes belong in `layouts/`, not as one-off edits to generated deck content.
 - New deck scaffolds belong under `decks/<deck-id>/`.

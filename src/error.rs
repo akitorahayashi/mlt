@@ -14,8 +14,6 @@ pub enum AppError {
     DeckNotFound(String),
     #[error("Deck already exists: {0}")]
     DeckAlreadyExists(String),
-    #[error("Workspace root with Cargo.toml and decks/ was not found from {0}")]
-    WorkspaceNotFound(PathBuf),
     #[error("{kind} path is missing or has an invalid type: {path}")]
     MissingPath { kind: &'static str, path: PathBuf },
     #[error("Marp command failed: {0}")]

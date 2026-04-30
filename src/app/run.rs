@@ -1,17 +1,17 @@
 use std::path::{Path, PathBuf};
 
+use crate::deck_layout;
 use crate::error::AppResult;
 use crate::marp::{self, Format};
-use crate::workspace;
 
 pub fn run(deck_dir: &Path, formats: &[Format]) -> AppResult<Vec<PathBuf>> {
-    let workspace = workspace::resolve_dir(deck_dir)?;
+    let deck_layout = deck_layout::resolve_dir(deck_dir)?;
 
     marp::export_many(
-        &workspace.slides_path,
-        &workspace.artifacts_dir,
-        &workspace.deck_id,
-        Some(&workspace.theme_path),
+        &deck_layout.slides_path,
+        &deck_layout.artifacts_dir,
+        &deck_layout.deck_id,
+        Some(&deck_layout.theme_path),
         formats,
     )
 }

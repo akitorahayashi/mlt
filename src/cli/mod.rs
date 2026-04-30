@@ -9,7 +9,7 @@ use std::path::PathBuf;
 #[derive(Parser)]
 #[command(name = "mlt")]
 #[command(version)]
-#[command(about = "Marp, Layout, Template CLI for local Marp decks")]
+#[command(about = "CLI for local Marp decks")]
 struct Cli {
     #[command(subcommand)]
     command: Command,

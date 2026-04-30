@@ -1,7 +1,7 @@
 # mlt Integration Notes for AI Agents
 
 ## Project Role
-- `mlt` stands for Marp, Layout, Template and manages local deck directories and exports completed Marp markdown through a Rust CLI.
+- `mlt` stands for Marp, Layout, Template. It manages local deck directories and exports completed Marp markdown through a Rust CLI.
 - AI agents own slide composition from `manuscript.md` into `slides.md`.
 
 ## Key Files

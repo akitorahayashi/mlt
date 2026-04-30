@@ -14,3 +14,14 @@ fn help_lists_primary_commands() {
         .stdout(predicate::str::contains("create"))
         .stdout(predicate::str::contains("run"));
 }
+
+#[test]
+fn version_prints_app_version() {
+    let ctx = TestContext::new();
+
+    ctx.command()
+        .arg("--version")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(env!("CARGO_PKG_VERSION")));
+}

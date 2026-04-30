@@ -17,7 +17,7 @@ fix:
 
 check:
     cargo fmt --check
-    cargo clippy --all-targets --all-features -- -D warnings
+    cargo clippy --all-targets --all-features --locked -- -D warnings
 
 test:
-    cargo test --all-targets --all-features
+    cargo test --all-targets --all-features --locked

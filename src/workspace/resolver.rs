@@ -35,9 +35,10 @@ pub fn resolve(root: &Path, reference: &str) -> AppResult<Workspace> {
     let theme_path = deck_dir.join("default.css");
     let artifacts_dir = deck_dir.join("artifacts");
 
-    ensure_exists("Manuscript", &manuscript_path)?;
-    ensure_exists("Slides", &slides_path)?;
-    ensure_exists("Theme", &theme_path)?;
+    ensure_exists("Manuscript", &manuscript_path, PathKind::File)?;
+    ensure_exists("Slides", &slides_path, PathKind::File)?;
+    ensure_exists("Theme", &theme_path, PathKind::File)?;
+    ensure_exists("Artifacts", &artifacts_dir, PathKind::Directory)?;
 
     Ok(Workspace {
         root: root.to_path_buf(),
@@ -50,12 +51,21 @@ pub fn resolve(root: &Path, reference: &str) -> AppResult<Workspace> {
     })
 }
 
-fn ensure_exists(kind: &'static str, path: &Path) -> AppResult<()> {
-    if path.exists() {
+fn ensure_exists(kind: &'static str, path: &Path, expected_kind: PathKind) -> AppResult<()> {
+    let is_valid = match expected_kind {
+        PathKind::File => path.is_file(),
+        PathKind::Directory => path.is_dir(),
+    };
+    if is_valid {
         return Ok(());
     }
     Err(AppError::MissingPath {
         kind,
         path: path.to_path_buf(),
     })
+}
+
+enum PathKind {
+    File,
+    Directory,
 }

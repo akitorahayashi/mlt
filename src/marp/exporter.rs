@@ -44,7 +44,16 @@ fn export(
         command.arg("--theme").arg(theme_path);
     }
 
-    let output = command.output()?;
+    let output = command.output().map_err(|error| {
+        if error.kind() == std::io::ErrorKind::NotFound {
+            AppError::MarpCommandFailed(
+                "Marp CLI ('marp' command) not found in PATH. Please install it via 'npm install -g @marp-team/marp-cli'."
+                    .to_string(),
+            )
+        } else {
+            AppError::Io(error)
+        }
+    })?;
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
         let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
@@ -61,6 +70,10 @@ fn export(
     let stdout = String::from_utf8_lossy(&output.stdout);
     if !stdout.trim().is_empty() {
         print!("{stdout}");
+    }
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    if !stderr.trim().is_empty() {
+        eprint!("{stderr}");
     }
 
     Ok(output_path)

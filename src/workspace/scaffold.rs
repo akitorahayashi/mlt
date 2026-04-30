@@ -60,23 +60,13 @@ pub fn validate_id(value: &str) -> AppResult<()> {
 }
 
 fn is_lower_kebab_case(value: &str) -> bool {
-    let mut parts = value.split('-');
-    let Some(first) = parts.next() else {
-        return false;
-    };
-    if first.is_empty()
-        || !first
-            .chars()
-            .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
-    {
-        return false;
-    }
-    parts.all(|part| {
-        !part.is_empty()
-            && part
-                .chars()
-                .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
-    })
+    !value.is_empty()
+        && value.split('-').all(|part| {
+            !part.is_empty()
+                && part
+                    .chars()
+                    .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
+        })
 }
 
 fn humanize(id: &str) -> String {

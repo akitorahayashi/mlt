@@ -62,13 +62,17 @@ defaults read com.apple.finder
 ```bash
 plutil -convert xml1 target.plist
 plutil -convert binary1 target.plist
+plutil -convert xml1 target.plist
+plutil -convert binary1 target.plist
 ```
 
 ---
 
 # 直接編集のリスク
 
-> ああああ
+> 直接編集は最後の手段
+
+<div style="height: 64px;"></div>
 
 - `cfprefsd` が設定をキャッシュしている
 - ファイル直編集だけでは反映されないことがある

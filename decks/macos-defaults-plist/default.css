@@ -71,14 +71,13 @@ section.title-slide h1 {
 
 section:not(.title-slide) h1 {
   position: absolute;
-  top: 24px;
+  top: 68px;
   left: 72px;
   right: 72px;
   width: auto;
   font-size: 56px;
   text-align: center;
   line-height: 1;
-  margin: 0;
 }
 
 h2 {
@@ -95,7 +94,9 @@ h3 {
 
 /* List styles */
 ul,
-ol {}
+ol {
+  margin: 0px;
+}
 
 li {
   margin-bottom: 10px;
@@ -106,8 +107,8 @@ blockquote {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 0 12px 12px 0;
   color: #ffffff;
-  padding: 16px 18px;
-  margin: 20px 0;
+  padding: 16px 16px;
+  margin: 20px;
 }
 
 /* Links and emphasis */
@@ -128,5 +129,6 @@ pre {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 6px;
-  color: #edf1ff;
+  color: #ffffff;
+  margin: 20px;
 }

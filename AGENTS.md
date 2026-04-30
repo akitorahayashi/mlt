@@ -1,7 +1,7 @@
-# marp-pj Integration Notes for AI Agents
+# mlt Integration Notes for AI Agents
 
 ## Project Role
-- `marp-pj` manages local deck directories and exports completed Marp markdown through a Rust CLI.
+- `mlt` stands for Marp, Layout, Template and manages local deck directories and exports completed Marp markdown through a Rust CLI.
 - AI agents own slide composition from `manuscript.md` into `slides.md`.
 
 ## Key Files
@@ -14,7 +14,7 @@
 - `decks/<deck-id>/artifacts/`
   - Deck-specific export outputs.
 - `src/assets/default.css`
-  - Shared theme entrypoint used on export. Slide front matter uses `marp-pj-default`.
+  - Shared theme entrypoint used on export. Slide front matter uses `mlt-default`.
 - `src/assets/theme.css.tpl`
   - Scaffold override template copied into new decks.
 - `src/assets/css/`

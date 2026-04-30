@@ -11,7 +11,7 @@ const HEADING_CSS: &str = include_str!("../assets/css/heading.css");
 const LIST_CSS: &str = include_str!("../assets/css/list.css");
 const HIGHLIGHT_CSS: &str = include_str!("../assets/css/highlight.css");
 const CODE_CSS: &str = include_str!("../assets/css/code.css");
-const EXPORT_THEME_FILENAME: &str = ".marp-pj-theme.css";
+const EXPORT_THEME_FILENAME: &str = ".mlt-theme.css";
 
 pub fn export_many(
     slides_path: &Path,

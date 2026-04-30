@@ -10,6 +10,7 @@ fn help_lists_primary_commands() {
         .arg("--help")
         .assert()
         .success()
+        .stdout(predicate::str::contains("mlt"))
         .stdout(predicate::str::contains("create"))
         .stdout(predicate::str::contains("cr"))
         .stdout(predicate::str::contains("run"))
@@ -24,5 +25,6 @@ fn version_prints_app_version() {
         .arg("--version")
         .assert()
         .success()
+        .stdout(predicate::str::contains("mlt"))
         .stdout(predicate::str::contains(env!("CARGO_PKG_VERSION")));
 }

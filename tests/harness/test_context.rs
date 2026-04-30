@@ -42,7 +42,7 @@ impl TestContext {
     }
 
     pub fn command(&self) -> Command {
-        let mut command = Command::cargo_bin("marp-pj").expect("binary");
+        let mut command = Command::cargo_bin("mlt").expect("binary");
         command.current_dir(&self.root);
         command
     }

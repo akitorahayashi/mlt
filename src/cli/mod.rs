@@ -7,9 +7,9 @@ use std::env;
 use std::path::PathBuf;
 
 #[derive(Parser)]
-#[command(name = "marp-pj")]
+#[command(name = "mlt")]
 #[command(version)]
-#[command(about = "Manage local Marp decks and exports", long_about = None)]
+#[command(about = "Marp, Layout, Template CLI for local Marp decks")]
 struct Cli {
     #[command(subcommand)]
     command: Command,

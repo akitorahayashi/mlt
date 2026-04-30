@@ -18,7 +18,7 @@ fn materialized_theme_contains_custom_css_imports() {
     let output_dir = tempfile::TempDir::new().expect("tempdir");
     let output_path = output_dir.path();
 
-    let export = marp_pj::marp::materialize_theme(Some(&theme_path), output_path)
+    let export = mlt::marp::materialize_theme(Some(&theme_path), output_path)
         .expect("materialize theme")
         .expect("theme path returned");
     let css = std::fs::read_to_string(export).expect("read export css");

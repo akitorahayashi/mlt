@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: marp-pj-default
+theme: mlt-default
 paginate: true
 header: ''
 footer: ''

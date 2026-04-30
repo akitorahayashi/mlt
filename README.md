@@ -1,6 +1,6 @@
 ## Overview
 
-This repository manages presentation source files by deck and exports Marp slide markdown through a local Rust CLI.
+mlt stands for Marp, Layout, Template. This repository manages presentation source files by deck and exports Marp slide markdown through a local Rust CLI.
 
 ## Structure
 

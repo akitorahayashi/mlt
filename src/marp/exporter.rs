@@ -32,6 +32,7 @@ fn export(
     }
 
     std::fs::create_dir_all(output_dir)?;
+    sync_custom_theme_css(theme, output_dir)?;
     let output_path = output_dir.join(format!("{basename}.{}", (*format).extension()));
 
     let mut command = Command::new("marp");
@@ -77,6 +78,24 @@ fn export(
     }
 
     Ok(output_path)
+}
+
+fn sync_custom_theme_css(theme: Option<&Path>, output_dir: &Path) -> AppResult<()> {
+    let Some(theme_path) = theme else {
+        return Ok(());
+    };
+
+    let Some(theme_dir) = theme_path.parent() else {
+        return Ok(());
+    };
+
+    let custom_css_path = theme_dir.join("custom.css");
+    if !custom_css_path.exists() {
+        return Ok(());
+    }
+
+    std::fs::copy(&custom_css_path, output_dir.join("custom.css"))?;
+    Ok(())
 }
 
 fn ensure_exists(kind: &'static str, path: &Path) -> AppResult<()> {

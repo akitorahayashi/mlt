@@ -6,13 +6,14 @@ header: ''
 footer: ''
 ---
 
-# macOS defaults と plist 運用の実践
+# macOS defaults<br>plist 運用の実践
 
-安全に設定を変更するための最短ガイド
+<div class="my-name">林 明虎</div>
+<p class="talk-meta">2026/4/30 夕会 LT会</p>
 
 ---
 
-## 今日のゴール
+# 今日のゴール
 
 - `defaults` と `.plist` の役割分担を理解する
 - 直接編集が危険な理由を説明できるようにする
@@ -20,7 +21,7 @@ footer: ''
 
 ---
 
-## 前提: 全キー一覧は存在しない
+# 前提: 全キー一覧は存在しない
 
 - Apple 公式の「全 defaults キー一覧」はない
 - 設定キーは OS / アプリ更新で変動する
@@ -28,7 +29,7 @@ footer: ''
 
 ---
 
-## 設定を探す基本コマンド
+# 設定を探す基本コマンド
 
 ```bash
 defaults domains
@@ -41,7 +42,7 @@ defaults read com.apple.finder
 
 ---
 
-## 設定保存の実態
+# 設定保存の実態
 
 - 設定ファイルは初回起動や設定変更時に作られる
 - 未設定項目はアプリ内デフォルト値が使われる
@@ -50,7 +51,7 @@ defaults read com.apple.finder
 
 ---
 
-## なぜ plist が読めないのか
+# なぜ plist が読めないのか
 
 - 多くの `.plist` はバイナリ形式
 - 通常エディタでは可読性が低い
@@ -63,7 +64,7 @@ plutil -convert binary1 target.plist
 
 ---
 
-## 直接編集のリスク
+# 直接編集のリスク
 
 - `cfprefsd` が設定をキャッシュしている
 - ファイル直編集だけでは反映されないことがある
@@ -71,7 +72,7 @@ plutil -convert binary1 target.plist
 
 ---
 
-## 推奨運用
+# 推奨運用
 
 - 設定変更は原則 `defaults`
 - 直接編集は例外対応に限定
@@ -83,7 +84,7 @@ killall cfprefsd
 
 ---
 
-## 結論
+# 結論
 
 - 「値の場所」より「変更経路」が重要
 - 安全経路は `defaults`、直接編集は最後の手段

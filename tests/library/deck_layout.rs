@@ -1,4 +1,4 @@
-use marp_pj::deck_layout;
+use mlt::deck_layout;
 
 use crate::harness::TestContext;
 

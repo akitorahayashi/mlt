@@ -5,8 +5,7 @@ fn fixture_deck_resolves_correctly() {
     let fixture_path =
         PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/test-fixture-deck");
 
-    let deck_layout =
-        marp_pj::deck_layout::resolve_dir(&fixture_path).expect("fixture should resolve");
+    let deck_layout = mlt::deck_layout::resolve_dir(&fixture_path).expect("fixture should resolve");
 
     assert_eq!(deck_layout.deck_id, "test-fixture-deck");
     assert!(deck_layout.manuscript_path.is_file());
@@ -23,7 +22,7 @@ fn fixture_theme_materializes_with_custom_styles() {
     let theme_path = fixture_path.join("theme.css");
     let output_dir = tempfile::TempDir::new().expect("temp dir");
 
-    let export = marp_pj::marp::materialize_theme(Some(&theme_path), output_dir.path())
+    let export = mlt::marp::materialize_theme(Some(&theme_path), output_dir.path())
         .expect("materialize fixture theme")
         .expect("export theme path returned");
 
@@ -59,19 +58,18 @@ fn fixture_exports_all_formats_with_materialized_theme() {
     let fixture_path =
         PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/test-fixture-deck");
 
-    let deck_layout =
-        marp_pj::deck_layout::resolve_dir(&fixture_path).expect("fixture should resolve");
+    let deck_layout = mlt::deck_layout::resolve_dir(&fixture_path).expect("fixture should resolve");
 
     // Export all formats (HTML, PDF, PPTX) to fixture artifacts directory
-    let export_artifacts = marp_pj::marp::export_many(
+    let export_artifacts = mlt::marp::export_many(
         &deck_layout.slides_path,
         &deck_layout.artifacts_dir,
         "slides",
         Some(&deck_layout.theme_path),
         &[
-            marp_pj::marp::Format::Html,
-            marp_pj::marp::Format::Pdf,
-            marp_pj::marp::Format::Pptx,
+            mlt::marp::Format::Html,
+            mlt::marp::Format::Pdf,
+            mlt::marp::Format::Pptx,
         ],
     )
     .expect("export to all formats should succeed");

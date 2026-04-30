@@ -1,3 +1,3 @@
 fn main() {
-    marp_pj::run();
+    mlt::run();
 }

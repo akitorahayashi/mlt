@@ -30,7 +30,7 @@
   - `just run list`
   - `just run create <deck-id>`
   - `just run run <deck-id>`
-  - `just run run <deck-id> --format <pdf|html|png|pptx>`
+  - `just run run <deck-id> --pdf|--html|--png|--pptx`
 
 ## Structural Changes
 - Structural slide changes belong in `layouts/`, not as one-off edits to generated deck content.

@@ -1,4 +1,4 @@
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{Parser, Subcommand};
 
 use crate::app::context::Context;
 use crate::app::{create, list, run as run_deck};
@@ -27,8 +27,14 @@ enum Command {
     Run {
         #[arg(help = "Deck id")]
         id: String,
-        #[arg(long, value_enum, help = "Optional output format")]
-        format: Option<RunFormat>,
+        #[arg(long, help = "Export PDF")]
+        pdf: bool,
+        #[arg(long, help = "Export HTML")]
+        html: bool,
+        #[arg(long, help = "Export PNG")]
+        png: bool,
+        #[arg(long, help = "Export PPTX")]
+        pptx: bool,
     },
 }
 
@@ -64,8 +70,15 @@ fn execute_command(context: &Context, command: Command) -> AppResult<()> {
             println!("{}", workspace.deck_dir.display());
             Ok(())
         }
-        Command::Run { id, format } => {
-            let exported = run_deck::run(&context.root, &id, format.map(RunFormat::into_format))?;
+        Command::Run {
+            id,
+            pdf,
+            html,
+            png,
+            pptx,
+        } => {
+            let selected_formats = select_formats(pdf, html, png, pptx);
+            let exported = run_deck::run(&context.root, &id, &selected_formats)?;
             for path in exported {
                 println!("{}", path.display());
             }
@@ -79,21 +92,45 @@ fn exit_with_error(error: AppError) -> ! {
     std::process::exit(1);
 }
 
-#[derive(Debug, Clone, Copy, ValueEnum)]
-enum RunFormat {
-    Pdf,
-    Html,
-    Png,
-    Pptx,
+fn select_formats(pdf: bool, html: bool, png: bool, pptx: bool) -> Vec<Format> {
+    let mut formats = Vec::new();
+    if pdf {
+        formats.push(Format::Pdf);
+    }
+    if html {
+        formats.push(Format::Html);
+    }
+    if png {
+        formats.push(Format::Png);
+    }
+    if pptx {
+        formats.push(Format::Pptx);
+    }
+    if formats.is_empty() {
+        return Format::ALL.to_vec();
+    }
+    formats
 }
 
-impl RunFormat {
-    fn into_format(self) -> Format {
-        match self {
-            Self::Pdf => Format::Pdf,
-            Self::Html => Format::Html,
-            Self::Png => Format::Png,
-            Self::Pptx => Format::Pptx,
-        }
+#[cfg(test)]
+mod tests {
+    use super::select_formats;
+    use crate::marp::Format;
+
+    #[test]
+    fn select_formats_defaults_to_all() {
+        assert_eq!(select_formats(false, false, false, false), Format::ALL);
+    }
+
+    #[test]
+    fn select_formats_picks_requested_flags_in_fixed_order() {
+        assert_eq!(
+            select_formats(true, false, true, false),
+            vec![Format::Pdf, Format::Png]
+        );
+        assert_eq!(
+            select_formats(false, true, false, true),
+            vec![Format::Html, Format::Pptx]
+        );
     }
 }

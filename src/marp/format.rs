@@ -18,18 +18,3 @@ impl Format {
         }
     }
 }
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Target {
-    Single(Format),
-    All,
-}
-
-impl Target {
-    pub fn formats(self) -> Vec<Format> {
-        match self {
-            Self::Single(format) => vec![format],
-            Self::All => Format::ALL.to_vec(),
-        }
-    }
-}

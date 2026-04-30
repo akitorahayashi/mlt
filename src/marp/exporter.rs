@@ -3,17 +3,17 @@ use std::process::Command;
 
 use crate::error::{AppError, AppResult};
 
-use super::Target;
+use super::Format;
 
 pub fn export_many(
     slides_path: &Path,
     output_dir: &Path,
     basename: &str,
     theme: Option<&Path>,
-    target: Target,
+    formats: &[Format],
 ) -> AppResult<Vec<PathBuf>> {
     let mut exported = Vec::new();
-    for format in target.formats() {
+    for format in formats {
         exported.push(export(slides_path, output_dir, basename, theme, format)?);
     }
     Ok(exported)
@@ -24,7 +24,7 @@ fn export(
     output_dir: &Path,
     basename: &str,
     theme: Option<&Path>,
-    format: super::Format,
+    format: &Format,
 ) -> AppResult<PathBuf> {
     ensure_exists("Slides", slides_path)?;
     if let Some(theme_path) = theme {
@@ -32,7 +32,7 @@ fn export(
     }
 
     std::fs::create_dir_all(output_dir)?;
-    let output_path = output_dir.join(format!("{basename}.{}", format.extension()));
+    let output_path = output_dir.join(format!("{basename}.{}", (*format).extension()));
 
     let mut command = Command::new("marp");
     command

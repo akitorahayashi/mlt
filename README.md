@@ -50,7 +50,7 @@ The repository keeps manuscript management and slide conversion separate.
 - `just run list` lists valid deck ids.
 - `just run create <deck-id>` scaffolds a deck directory with `default.css`.
 - `just run run <deck-id>` exports all supported formats into `decks/<deck-id>/artifacts/`.
-- `just run run <deck-id> --format <pdf|html|png|pptx>` exports one format.
+- `just run run <deck-id> --pdf|--html|--png|--pptx` exports selected formats.
 
 `example-deck` is the starter deck under `decks/example-deck/`.
 
@@ -60,7 +60,8 @@ The repository keeps manuscript management and slide conversion separate.
 just run list
 just run create kyoto-go-64
 just run run example-deck
-just run run example-deck --format pdf
+just run run example-deck --pdf
+just run run example-deck --html --pdf
 ```
 
 ## Development

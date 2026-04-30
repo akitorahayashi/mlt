@@ -6,6 +6,8 @@ header: ''
 footer: ''
 ---
 
+<!-- _class: title-slide -->
+
 # macOS defaults<br>plist 運用の実践
 
 <div class="my-name">林 明虎</div>
@@ -65,6 +67,8 @@ plutil -convert binary1 target.plist
 ---
 
 # 直接編集のリスク
+
+> ああああ
 
 - `cfprefsd` が設定をキャッシュしている
 - ファイル直編集だけでは反映されないことがある

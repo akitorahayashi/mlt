@@ -1,3 +1,7 @@
 /* Deck-local overrides.
  * Keep default.css as the Marp theme entrypoint.
  */
+
+section:not(.title-slide) h1 {
+  margin-top: 8px;
+}

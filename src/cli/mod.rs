@@ -1,9 +1,10 @@
 use clap::{Parser, Subcommand};
 
 use crate::app::context::Context;
-use crate::app::{create, list, run as run_deck};
+use crate::app::{create, run as run_deck};
 use crate::error::{AppError, AppResult};
 use crate::marp::Format;
+use std::path::PathBuf;
 
 #[derive(Parser)]
 #[command(name = "marp-pj")]
@@ -16,8 +17,6 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
-    #[command(about = "List valid deck ids", visible_alias = "ls")]
-    List,
     #[command(about = "Create a new deck scaffold", visible_alias = "cr")]
     Create {
         #[arg(help = "New lower-kebab-case deck id")]
@@ -25,8 +24,8 @@ enum Command {
     },
     #[command(about = "Export deck slides into deck artifacts", visible_alias = "r")]
     Run {
-        #[arg(help = "Deck id")]
-        id: String,
+        #[arg(help = "Path to deck directory")]
+        path: PathBuf,
         #[arg(long, help = "Export PDF")]
         pdf: bool,
         #[arg(long, help = "Export HTML")]
@@ -52,30 +51,19 @@ pub fn run() {
 
 fn execute_command(context: &Context, command: Command) -> AppResult<()> {
     match command {
-        Command::List => {
-            let deck_ids = list::run(&context.root)?;
-            if deck_ids.is_empty() {
-                println!("No valid decks found");
-                return Ok(());
-            }
-            for deck_id in deck_ids {
-                println!("{deck_id}");
-            }
-            Ok(())
-        }
         Command::Create { id } => {
             let workspace = create::run(&context.root, &id)?;
             println!("{}", workspace.deck_dir.display());
             Ok(())
         }
         Command::Run {
-            id,
+            path,
             pdf,
             html,
             pptx,
         } => {
             let selected_formats = select_formats(pdf, html, pptx);
-            let exported = run_deck::run(&context.root, &id, &selected_formats)?;
+            let exported = run_deck::run(&path, &selected_formats)?;
             for path in exported {
                 println!("{}", path.display());
             }

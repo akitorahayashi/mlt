@@ -4,8 +4,8 @@ use crate::error::AppResult;
 use crate::marp::{self, Format};
 use crate::workspace;
 
-pub fn run(root: &Path, id: &str, formats: &[Format]) -> AppResult<Vec<PathBuf>> {
-    let workspace = workspace::resolve(root, id)?;
+pub fn run(deck_dir: &Path, formats: &[Format]) -> AppResult<Vec<PathBuf>> {
+    let workspace = workspace::resolve_dir(deck_dir)?;
 
     marp::export_many(
         &workspace.slides_path,

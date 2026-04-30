@@ -11,12 +11,6 @@ fn create_scaffolds_default_theme_file() {
         .success()
         .stdout(predicate::str::contains("decks/new-deck"));
 
-    ctx.command()
-        .arg("list")
-        .assert()
-        .success()
-        .stdout(predicate::str::contains("new-deck"));
-
     assert!(ctx.root().join("decks/new-deck/theme.css").is_file());
     assert!(ctx.root().join("decks/new-deck/manuscript.md").is_file());
     assert!(ctx.root().join("decks/new-deck/slides.md").is_file());

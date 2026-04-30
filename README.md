@@ -44,21 +44,21 @@ just setup
 
 The repository keeps manuscript management and slide conversion separate.
 
-- `just run list` lists valid deck ids.
-- `just run create <deck-id>` scaffolds a deck directory with `default.css`.
-- `just run run <deck-id>` exports all supported formats into `decks/<deck-id>/artifacts/`.
-- `just run run <deck-id> [--pdf] [--html] [--png] [--pptx]` exports selected formats.
+- `just run ls` lists valid deck ids.
+- `just run cr <deck-id>` scaffolds a deck directory with `default.css`.
+- `just run r <deck-id>` exports all supported formats into `decks/<deck-id>/artifacts/`.
+- `just run r <deck-id> [--pdf] [--html] [--pptx]` exports selected formats.
 
 `macos-defaults-plist` is the starter deck under `decks/macos-defaults-plist/`.
 
 ## Commands
 
 ```bash
-just run list
-just run create kyoto-go-64
-just run run macos-defaults-plist
-just run run macos-defaults-plist --pdf
-just run run macos-defaults-plist --html --pdf
+just run ls
+just run cr kyoto-go-64
+just run r macos-defaults-plist
+just run r macos-defaults-plist --pdf
+just run r macos-defaults-plist --html --pdf
 ```
 
 ## Development

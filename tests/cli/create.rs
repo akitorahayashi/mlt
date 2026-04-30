@@ -24,3 +24,16 @@ fn create_scaffolds_default_theme_file() {
         fs::read_to_string(ctx.root().join("decks/new-deck/default.css")).expect("read css");
     assert!(css_content.contains("@theme marp-pj-default"));
 }
+
+#[test]
+fn cr_alias_creates_deck() {
+    let ctx = TestContext::new();
+
+    ctx.command()
+        .args(["cr", "alias-deck"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("decks/alias-deck"));
+
+    assert!(ctx.root().join("decks/alias-deck/slides.md").is_file());
+}

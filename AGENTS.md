@@ -24,10 +24,10 @@
 ## Export Interface
 - Human-facing commands go through `just run ...`.
 - Common commands:
-  - `just run list`
-  - `just run create <deck-id>`
-  - `just run run <deck-id>`
-  - `just run run <deck-id> [--pdf] [--html] [--png] [--pptx]`
+  - `just run ls`
+  - `just run cr <deck-id>`
+  - `just run r <deck-id>`
+  - `just run r <deck-id> [--pdf] [--html] [--pptx]`
 
 ## Structural Changes
 - New deck scaffolds belong under `decks/<deck-id>/`.

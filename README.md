@@ -29,17 +29,19 @@ output/
 - Python 3.12+
 - [uv](https://github.com/astral-sh/uv)
 - [marp-cli](https://github.com/marp-team/marp-cli)
+- [just](https://github.com/casey/just)
 
-An npm installation of Marp CLI is compatible with the current commands.
+An npm installation of Marp CLI and a Homebrew installation of `just` are compatible with the current commands.
 
 ```bash
 npm install -g @marp-team/marp-cli
+brew install just
 ```
 
 ## Setup
 
 ```bash
-make setup
+just setup
 ```
 
 ## Deck Workflow
@@ -55,25 +57,22 @@ The repository keeps manuscript management and slide conversion separate.
 ## Commands
 
 ```bash
-make pdf DECK=example-deck
-make html DECK=example-deck
-make png DECK=example-deck
-make pptx DECK=example-deck
-make all DECK=example-deck
+just pdf example-deck
+just html example-deck
+just png example-deck
+just pptx example-deck
+just all example-deck
 ```
 
 The direct conversion interface is available through the CLI.
 
 ```bash
-uv run python -m src.cli convert decks/example-deck/slides.md \
-  --output-dir output/example-deck/direct \
-  --theme-file themes/default.css \
-  --to pdf
+just convert decks/example-deck/slides.md output/example-deck/direct pdf themes/default.css
 ```
 
 ## Development
 
-- `make help` prints the available targets.
-- `make test` runs the repository test suite.
-- `make format` runs Black and Ruff fixes.
-- `make lint` runs Black and Ruff checks.
+- `just help` prints the available recipes.
+- `just test` runs the repository test suite.
+- `just fix` runs Black and Ruff fixes.
+- `just check` runs Black and Ruff checks.

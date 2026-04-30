@@ -30,15 +30,7 @@ pub fn resolve(root: &Path, reference: &str) -> AppResult<Workspace> {
         return Err(AppError::DeckNotFound(reference.to_string()));
     }
 
-    let manuscript_path = deck_dir.join("manuscript.md");
-    let slides_path = deck_dir.join("slides.md");
-    let theme_path = deck_dir.join("theme.css");
-    let artifacts_dir = deck_dir.join("artifacts");
-
-    ensure_exists("Manuscript", &manuscript_path, PathKind::File)?;
-    ensure_exists("Slides", &slides_path, PathKind::File)?;
-    ensure_exists("Theme", &theme_path, PathKind::File)?;
-    ensure_exists("Artifacts", &artifacts_dir, PathKind::Directory)?;
+    let (manuscript_path, slides_path, theme_path, artifacts_dir) = resolve_deck_paths(&deck_dir)?;
 
     Ok(Workspace {
         root: root.to_path_buf(),
@@ -56,20 +48,13 @@ pub fn resolve_dir(deck_dir: &Path) -> AppResult<Workspace> {
         return Err(AppError::DeckNotFound(deck_dir.display().to_string()));
     }
 
-    let manuscript_path = deck_dir.join("manuscript.md");
-    let slides_path = deck_dir.join("slides.md");
-    let theme_path = deck_dir.join("theme.css");
-    let artifacts_dir = deck_dir.join("artifacts");
-
-    ensure_exists("Manuscript", &manuscript_path, PathKind::File)?;
-    ensure_exists("Slides", &slides_path, PathKind::File)?;
-    ensure_exists("Theme", &theme_path, PathKind::File)?;
-    ensure_exists("Artifacts", &artifacts_dir, PathKind::Directory)?;
+    let (manuscript_path, slides_path, theme_path, artifacts_dir) = resolve_deck_paths(deck_dir)?;
 
     let deck_id = deck_dir
         .file_name()
         .map(|s| s.to_string_lossy().to_string())
-        .unwrap_or_default();
+        .filter(|id| !id.is_empty())
+        .unwrap_or_else(|| "slides".to_string());
 
     Ok(Workspace {
         root: deck_dir.to_path_buf(),
@@ -80,6 +65,20 @@ pub fn resolve_dir(deck_dir: &Path) -> AppResult<Workspace> {
         artifacts_dir,
         theme_path,
     })
+}
+
+fn resolve_deck_paths(deck_dir: &Path) -> AppResult<(PathBuf, PathBuf, PathBuf, PathBuf)> {
+    let manuscript_path = deck_dir.join("manuscript.md");
+    let slides_path = deck_dir.join("slides.md");
+    let theme_path = deck_dir.join("theme.css");
+    let artifacts_dir = deck_dir.join("artifacts");
+
+    ensure_exists("Manuscript", &manuscript_path, PathKind::File)?;
+    ensure_exists("Slides", &slides_path, PathKind::File)?;
+    ensure_exists("Theme", &theme_path, PathKind::File)?;
+    ensure_exists("Artifacts", &artifacts_dir, PathKind::Directory)?;
+
+    Ok((manuscript_path, slides_path, theme_path, artifacts_dir))
 }
 
 fn ensure_exists(kind: &'static str, path: &Path, expected_kind: PathKind) -> AppResult<()> {

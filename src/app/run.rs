@@ -10,7 +10,7 @@ pub fn run(deck_dir: &Path, formats: &[Format]) -> AppResult<Vec<PathBuf>> {
     marp::export_many(
         &workspace.slides_path,
         &workspace.artifacts_dir,
-        "slides",
+        &workspace.deck_id,
         Some(&workspace.theme_path),
         formats,
     )

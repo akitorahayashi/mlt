@@ -71,7 +71,7 @@ section.title-slide h1 {
 
 section:not(.title-slide) h1 {
   position: absolute;
-  top: 68px;
+  top: 84px;
   left: 72px;
   right: 72px;
   width: auto;

@@ -7,6 +7,8 @@ use super::resolve;
 use super::Workspace;
 
 const DEFAULT_THEME_CSS: &str = include_str!("../assets/default.css");
+const MANUSCRIPT_TEMPLATE: &str = include_str!("../assets/manuscript.md.tpl");
+const SLIDES_TEMPLATE: &str = include_str!("../assets/slides.md.tpl");
 
 pub fn create(root: &Path, id: &str) -> AppResult<Workspace> {
     validate_id(id)?;
@@ -23,31 +25,13 @@ pub fn create(root: &Path, id: &str) -> AppResult<Workspace> {
     fs::write(deck_dir.join("default.css"), DEFAULT_THEME_CSS)?;
     let title = humanize(id);
 
-    fs::write(
-        deck_dir.join("manuscript.md"),
-        format!(
-            "---\n\
-title: {title}\n\
-language: ja\n\
----\n\n\
-ここに発表原稿を書く。\n"
-        ),
-    )?;
+    let manuscript = MANUSCRIPT_TEMPLATE.replace("__TITLE__", &title);
+    fs::write(deck_dir.join("manuscript.md"), manuscript)?;
 
-    fs::write(
-        deck_dir.join("slides.md"),
-        format!(
-            "---\n\
-marp: true\n\
-theme: marp-pj-default\n\
-paginate: true\n\
-header: ''\n\
-footer: ''\n\
----\n\n\
-# {title}\n\n\
-Deck scaffold for `{id}`.\n"
-        ),
-    )?;
+    let slides = SLIDES_TEMPLATE
+        .replace("__TITLE__", &title)
+        .replace("__DECK_ID__", id);
+    fs::write(deck_dir.join("slides.md"), slides)?;
 
     resolve(root, id)
 }

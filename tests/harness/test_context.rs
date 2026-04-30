@@ -16,12 +16,7 @@ impl TestContext {
     pub fn new() -> Self {
         let temp_dir = TempDir::new().expect("temp dir");
         let root = temp_dir.path().join("workspace");
-        fs::create_dir_all(root.join("decks")).expect("create decks");
-        fs::write(
-            root.join("Cargo.toml"),
-            "[package]\nname = 'fixture'\nversion = '0.0.0'\n",
-        )
-        .expect("create cargo");
+        create_workspace(&root);
         Self {
             _temp_dir: temp_dir,
             root,
@@ -45,4 +40,13 @@ impl TestContext {
         command.current_dir(&self.root);
         command
     }
+}
+
+fn create_workspace(root: &Path) {
+    fs::create_dir_all(root.join("decks")).expect("create decks");
+    fs::write(
+        root.join("Cargo.toml"),
+        "[package]\nname = 'fixture'\nversion = '0.0.0'\n",
+    )
+    .expect("create cargo");
 }

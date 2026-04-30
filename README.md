@@ -49,16 +49,16 @@ The repository keeps manuscript management and slide conversion separate.
 - `just run run <deck-id>` exports all supported formats into `decks/<deck-id>/artifacts/`.
 - `just run run <deck-id> [--pdf] [--html] [--png] [--pptx]` exports selected formats.
 
-`example-deck` is the starter deck under `decks/example-deck/`.
+`macos-defaults-plist` is the starter deck under `decks/macos-defaults-plist/`.
 
 ## Commands
 
 ```bash
 just run list
 just run create kyoto-go-64
-just run run example-deck
-just run run example-deck --pdf
-just run run example-deck --html --pdf
+just run run macos-defaults-plist
+just run run macos-defaults-plist --pdf
+just run run macos-defaults-plist --html --pdf
 ```
 
 ## Development

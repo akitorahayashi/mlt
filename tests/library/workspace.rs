@@ -24,11 +24,11 @@ fn create_then_resolve_roundtrip() {
 #[test]
 fn list_returns_only_valid_entries() {
     let ctx = TestContext::new();
-    workspace::create(ctx.root(), "example-deck").expect("create valid deck");
+    workspace::create(ctx.root(), "fixture-deck").expect("create valid deck");
     ctx.create_invalid_deck_dir("invalid");
 
     let entries = workspace::list(ctx.root()).expect("list decks");
 
     assert_eq!(entries.len(), 1);
-    assert_eq!(entries[0], "example-deck");
+    assert_eq!(entries[0], "fixture-deck");
 }

@@ -59,11 +59,13 @@ defaults read com.apple.finder
 - 通常エディタでは可読性が低い
 - 可読化には `plutil` を使う
 
-```bash
-plutil -convert xml1 target.plist
-plutil -convert binary1 target.plist
-plutil -convert xml1 target.plist
-plutil -convert binary1 target.plist
+```rust
+fn main() {
+    let app = "Finder";
+    let path = format!("~/Library/Preferences/com.apple.{app}.plist");
+
+    println!("target: {path}");
+}
 ```
 
 ---

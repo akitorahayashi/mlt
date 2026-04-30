@@ -1,3 +1,54 @@
 /* Deck-local overrides.
  * Keep default.css as the Marp theme entrypoint.
  */
+
+section pre {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  font-weight: 400;
+}
+
+section pre code {
+  color: #c9d1d9;
+  background: transparent;
+  font-weight: 400;
+  line-height: 1.45;
+  padding: 0;
+}
+
+section pre .hljs-keyword,
+section pre .hljs-operator {
+  color: #ff7b72;
+}
+
+section pre .hljs-string {
+  color: #a5d6ff;
+}
+
+section pre .hljs-number,
+section pre .hljs-literal {
+  color: #79c0ff;
+}
+
+section pre .hljs-comment {
+  color: #8b949e;
+}
+
+section pre .hljs-built_in,
+section pre .hljs-symbol,
+section pre .hljs-meta {
+  color: #79c0ff;
+}
+
+section pre .hljs-title,
+section pre .hljs-function,
+section pre .hljs-type,
+section pre .hljs-title.function_ {
+  color: #d2a8ff;
+}
+
+section pre .hljs-variable,
+section pre .hljs-params {
+  color: #ffa657;
+}

@@ -27,11 +27,8 @@
 
 ## Export Interface
 - Human-facing commands go through `just run ...`.
-- Common commands:
-  - `just run ls`
-  - `just run cr <deck-id>`
-  - `just run r <deck-id>`
-  - `just run r <deck-id> [--pdf] [--html] [--pptx]`
-
-## Structural Changes
-- New deck scaffolds belong under `decks/<deck-id>/`.
+- `just run cr <deck-id>` scaffolds a new deck under `decks/<deck-id>/`.
+- `just run r <deck-path>` exports a deck from an explicit directory path (e.g., `decks/my-deck`, `tests/fixtures/test-fixture-deck`).
+- `just run r <deck-path> [--pdf] [--html] [--pptx]` exports to specified formats; all formats export by default.
+- Exported files are written to `<deck-path>/artifacts/`.
+- Path resolution validates the deck directory contains `manuscript.md`, `slides.md`, `theme.css`, and `artifacts/`; missing files cause explicit failure.

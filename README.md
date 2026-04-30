@@ -1,6 +1,6 @@
 ## Overview
 
-This repository manages presentation source files by deck and exports completed Marp slide markdown through a dedicated conversion CLI.
+This repository manages presentation source files by deck and exports completed Marp slide markdown through a local Rust CLI.
 
 ## Structure
 
@@ -26,8 +26,7 @@ output/
 
 ## Prerequisites
 
-- Python 3.12+
-- [uv](https://github.com/astral-sh/uv)
+- Rust toolchain
 - [marp-cli](https://github.com/marp-team/marp-cli)
 - [just](https://github.com/casey/just)
 
@@ -49,30 +48,32 @@ just setup
 The repository keeps manuscript management and slide conversion separate.
 
 - `slide-generation.md` describes how manuscripts, layouts, and themes are turned into `slides.md`.
-- `python -m src.cli export <deck-id> --to <format>` exports a managed deck.
-- `python -m src.cli convert <slides.md> --output-dir <dir> --to <format>` converts a completed slide markdown file directly.
+- `just run decks list` lists valid decks.
+- `just run export <format> <deck-id>` exports a managed deck.
+- `just run convert <format> <slides.md> --output-dir <dir>` converts a completed slide markdown file directly.
 
 `example-deck` is the starter deck under `decks/example-deck/`.
 
 ## Commands
 
 ```bash
-just pdf example-deck
-just html example-deck
-just png example-deck
-just pptx example-deck
-just all example-deck
+just run decks list
+just run decks show example-deck
+just run decks create kyoto-go-64
+just run export pdf example-deck
+just run export all example-deck
 ```
 
 The direct conversion interface is available through the CLI.
 
 ```bash
-just convert decks/example-deck/slides.md output/example-deck/direct pdf themes/default.css
+just run convert pdf decks/example-deck/slides.md --output-dir output/example-deck/direct --theme themes/default.css
 ```
 
 ## Development
 
 - `just help` prints the available recipes.
-- `just test` runs the repository test suite.
-- `just fix` runs Black and Ruff fixes.
-- `just check` runs Black and Ruff checks.
+- `just run ...` invokes the local CLI through `cargo run --`.
+- `just test` runs the Rust test suite.
+- `just fix` runs `cargo fmt` and `cargo clippy --fix`.
+- `just check` runs `cargo fmt --check` and `cargo clippy`.

@@ -11,10 +11,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.11
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -24,11 +22,8 @@ jobs:
       - name: Install marp-cli
         run: npm install -g @marp-team/marp-cli
 
-      - name: Install uv
-        run: pipx install uv
-
-      - name: Install dependencies
-        run: uv sync --frozen
+      - name: Set up just
+        uses: extractions/setup-just@v2
 
       - name: Run tests
-        run: uv run make test
+        run: just test

@@ -1,9 +1,9 @@
 use clap::{Parser, Subcommand};
 
-use crate::app::context::Context;
 use crate::app::{create, run as run_deck};
 use crate::error::{AppError, AppResult};
 use crate::marp::Format;
+use std::env;
 use std::path::PathBuf;
 
 #[derive(Parser)]
@@ -37,23 +37,19 @@ enum Command {
 
 pub fn run() {
     let cli = Cli::parse();
-    let context = match Context::discover() {
-        Ok(context) => context,
-        Err(error) => exit_with_error(error),
-    };
-
-    let result = execute_command(&context, cli.command);
+    let result = execute_command(cli.command);
 
     if let Err(error) = result {
         exit_with_error(error);
     }
 }
 
-fn execute_command(context: &Context, command: Command) -> AppResult<()> {
+fn execute_command(command: Command) -> AppResult<()> {
     match command {
         Command::Create { id } => {
-            let workspace = create::run(&context.root, &id)?;
-            println!("{}", workspace.deck_dir.display());
+            let root = env::current_dir()?;
+            let deck_layout = create::run(&root, &id)?;
+            println!("{}", deck_layout.deck_dir.display());
             Ok(())
         }
         Command::Run {

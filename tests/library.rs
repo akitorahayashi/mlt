@@ -1,3 +1,3 @@
+#[path = "library/deck_layout.rs"]
+mod deck_layout;
 mod harness;
-#[path = "library/workspace.rs"]
-mod workspace;

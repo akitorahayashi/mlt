@@ -4,8 +4,6 @@ use std::path::{Path, PathBuf};
 use assert_cmd::Command;
 use tempfile::TempDir;
 
-use marp_pj::workspace;
-
 pub struct TestContext {
     _temp_dir: TempDir,
     root: PathBuf,
@@ -28,7 +26,15 @@ impl TestContext {
     }
 
     pub fn create_deck(&self, id: &str) {
-        workspace::create(&self.root, id).expect("create deck");
+        let deck_dir = self.root.join("decks").join(id);
+        fs::create_dir_all(deck_dir.join("assets")).expect("create deck assets");
+        fs::create_dir_all(deck_dir.join("artifacts")).expect("create deck artifacts");
+        fs::write(deck_dir.join("assets").join(".gitkeep"), "").expect("seed assets gitkeep");
+        fs::write(deck_dir.join("artifacts").join(".gitkeep"), "").expect("seed artifacts gitkeep");
+        fs::write(deck_dir.join("manuscript.md"), "# Test\n").expect("seed manuscript");
+        fs::write(deck_dir.join("slides.md"), "---\nmarp: true\n---\n# Test\n")
+            .expect("seed slides");
+        fs::write(deck_dir.join("theme.css"), "").expect("seed theme");
     }
 
     pub fn create_invalid_deck_dir(&self, id: &str) {

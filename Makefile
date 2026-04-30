@@ -11,20 +11,20 @@
 # Default target when 'make' is run without arguments
 .DEFAULT_GOAL := help
 
-# Specify the Python executable and main script file name
-PYTHON := ./.venv/bin/python
-MAIN_FILE_PATH := ./src/main.py
+# Marp slide generation settings (implementation-agnostic interface)
+SLIDES_SRC := ./output/slides.md
+THEME_PATH := ./src/theme.css
+OUTPUT_DIR := ./output
 
 # ==============================================================================
 # HELP
 # ==============================================================================
 
-.PHONY: help
-help: ## Display this help message
+.PHONY: help 
+help: ## Show this help message
 	@echo "Usage: make [target]"
-	@echo ""
 	@echo "Available targets:"
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%%-15s\033[0m %%s\n", $1, $2}' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*?## "} /^[^_][a-zA-Z0-9_-]*:.*?## / {printf "  \033[36m%-25s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 # ==============================================================================
 # ENVIRONMENT SETUP
@@ -35,20 +35,30 @@ setup: ## Project initial setup: install dependencies and create .env file
 	@echo "🐍 Installing python dependencies with uv..."
 	@uv sync
 
-
 # ==============================================================================
-# APPLICATION
+# SLIDE EXPORTS (via Marp CLI)
 # ==============================================================================
 
-.PHONY: run
-run: ## Simply execute src/main.py
-	@echo "🚀 Executing src/main.py..."
-	@$(PYTHON) $(MAIN_FILE_PATH)
+.PHONY: pdf
+pdf: ## Generate PDF from output/slides.md using Marp
+	@echo "📄 Generating PDF from $(SLIDES_SRC)..."
+	@marp $(SLIDES_SRC) --theme $(THEME_PATH) -o $(OUTPUT_DIR)/slides.pdf
 
-.PHONY: preview
-preview: ## Run a local server with live-reloading
-	@echo "👀 Starting preview server at http://localhost:8080 (Press Ctrl+C to stop)"
-	@$(PYTHON) src/main.py preview
+.PHONY: pptx
+pptx: ## Generate PPTX from output/slides.md using Marp
+	@echo "📊 Generating PPTX from $(SLIDES_SRC)..."
+	@marp $(SLIDES_SRC) --theme $(THEME_PATH) -o $(OUTPUT_DIR)/slides.pptx
+
+.PHONY: html
+html: ## Generate HTML from output/slides.md using Marp
+	@echo "🌐 Generating HTML from $(SLIDES_SRC)..."
+	@marp $(SLIDES_SRC) --theme $(THEME_PATH) -o $(OUTPUT_DIR)/slides.html
+
+.PHONY: all
+all: ## Generate PDF, PPTX, and HTML from output/slides.md
+	@$(MAKE) pdf
+	@$(MAKE) pptx
+	@$(MAKE) html
 
 # ==============================================================================
 # CODE QUALITY
@@ -57,23 +67,20 @@ preview: ## Run a local server with live-reloading
 .PHONY: format
 format: ## Automatically format code using Black and Ruff
 	@echo "🎨 Formatting code with black and ruff..."
-	@black .
-	@ruff check . --fix
+	@uv run black .
+	@uv run ruff check . --fix
 
 .PHONY: lint
 lint: ## Perform static code analysis (check) using Black and Ruff
 	@echo "🔬 Linting code with black and ruff..."
-	@black --check .
-	@ruff check .
+	@uv run black --check .
+	@uv run ruff check .
 
 # ==============================================================================
 # TESTING
 # ==============================================================================
 
 .PHONY: test
-test: unit-test ## Run the full test suite
-
-.PHONY: unit-test
-unit-test: ## Run unit tests
+test: ## Run the full test suite
 	@echo "Running unit tests..."
-	@PYTHONPATH=. $(PYTHON) -m pytest tests/unit -v -s
+	@uv run pytest -v -s

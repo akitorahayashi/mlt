@@ -6,10 +6,6 @@ on:
 jobs:
   test:
     runs-on: macos-latest
-    strategy:
-      matrix:
-        test_target: [unit-test]
-      fail-fast: false
 
     steps:
       - name: Checkout
@@ -35,4 +31,4 @@ jobs:
         run: uv sync --frozen
 
       - name: Run tests
-        run: uv run make ${{ matrix.test_target }}
+        run: uv run make test

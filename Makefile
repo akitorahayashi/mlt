@@ -11,10 +11,7 @@
 # Default target when 'make' is run without arguments
 .DEFAULT_GOAL := help
 
-# Marp slide generation settings (implementation-agnostic interface)
-SLIDES_SRC := ./output/slides.md
-THEME_PATH := ./src/theme.css
-OUTPUT_DIR := ./output
+DECK ?= example-deck
 
 # ==============================================================================
 # HELP
@@ -40,25 +37,24 @@ setup: ## Project initial setup: install dependencies and create .env file
 # ==============================================================================
 
 .PHONY: pdf
-pdf: ## Generate PDF from output/slides.md using Marp
-	@echo "📄 Generating PDF from $(SLIDES_SRC)..."
-	@marp $(SLIDES_SRC) --theme $(THEME_PATH) -o $(OUTPUT_DIR)/slides.pdf
+pdf: ## Generate PDF for DECK=<deck-id>
+	@uv run python -m src.cli export $(DECK) --to pdf
 
 .PHONY: pptx
-pptx: ## Generate PPTX from output/slides.md using Marp
-	@echo "📊 Generating PPTX from $(SLIDES_SRC)..."
-	@marp $(SLIDES_SRC) --theme $(THEME_PATH) -o $(OUTPUT_DIR)/slides.pptx
+pptx: ## Generate PPTX for DECK=<deck-id>
+	@uv run python -m src.cli export $(DECK) --to pptx
 
 .PHONY: html
-html: ## Generate HTML from output/slides.md using Marp
-	@echo "🌐 Generating HTML from $(SLIDES_SRC)..."
-	@marp $(SLIDES_SRC) --theme $(THEME_PATH) -o $(OUTPUT_DIR)/slides.html
+html: ## Generate HTML for DECK=<deck-id>
+	@uv run python -m src.cli export $(DECK) --to html
+
+.PHONY: png
+png: ## Generate PNG for DECK=<deck-id>
+	@uv run python -m src.cli export $(DECK) --to png
 
 .PHONY: all
-all: ## Generate PDF, PPTX, and HTML from output/slides.md
-	@$(MAKE) pdf
-	@$(MAKE) pptx
-	@$(MAKE) html
+all: ## Generate PDF, HTML, PNG, and PPTX for DECK=<deck-id>
+	@uv run python -m src.cli export $(DECK) --to all
 
 # ==============================================================================
 # CODE QUALITY
@@ -67,14 +63,14 @@ all: ## Generate PDF, PPTX, and HTML from output/slides.md
 .PHONY: format
 format: ## Automatically format code using Black and Ruff
 	@echo "🎨 Formatting code with black and ruff..."
-	@uv run black .
-	@uv run ruff check . --fix
+	@uv run black src tests
+	@uv run ruff check src tests --fix
 
 .PHONY: lint
 lint: ## Perform static code analysis (check) using Black and Ruff
 	@echo "🔬 Linting code with black and ruff..."
-	@uv run black --check .
-	@uv run ruff check .
+	@uv run black --check src tests
+	@uv run ruff check src tests
 
 # ==============================================================================
 # TESTING
@@ -83,4 +79,4 @@ lint: ## Perform static code analysis (check) using Black and Ruff
 .PHONY: test
 test: ## Run the full test suite
 	@echo "Running unit tests..."
-	@uv run pytest -v -s
+	@uv run pytest -q

@@ -1,0 +1,6 @@
+deck_id: example-deck
+title: Example Deck
+theme: default
+slides: slides.md
+manuscript: manuscript.md
+output_basename: slides

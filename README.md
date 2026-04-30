@@ -1,63 +1,79 @@
 ## Overview
 
-A Python project for creating presentation slides using Marp CLI.
+This repository manages presentation source files by deck and exports completed Marp slide markdown through a dedicated conversion CLI.
 
-## Usage
+## Structure
 
-### Prerequisites
+```text
+decks/<deck-id>/
+  deck.yml
+  manuscript.md
+  slides.md
+  assets/
+
+layouts/
+themes/
+src/
+output/
+```
+
+- `decks/<deck-id>/manuscript.md` stores the presentation narrative.
+- `decks/<deck-id>/slides.md` stores the Marp-ready slide markdown.
+- `decks/<deck-id>/assets/` stores files that belong only to that deck.
+- `layouts/` stores shared slide patterns.
+- `themes/` stores shared Marp themes.
+- `output/<deck-id>/` stores exported files.
+
+## Prerequisites
 
 - Python 3.12+
 - [uv](https://github.com/astral-sh/uv)
 - [marp-cli](https://github.com/marp-team/marp-cli)
 
-You can install `marp-cli` with Homebrew or npm.
+An npm installation of Marp CLI is compatible with the current commands.
 
 ```bash
-# npm
 npm install -g @marp-team/marp-cli
 ```
 
-### Setup
-
-Install project dependencies.
+## Setup
 
 ```bash
 make setup
 ```
 
-### Workflow Overview
+## Deck Workflow
 
-This project is designed so that an AI agent (e.g., Codex) generates the actual slide deck.
+The repository keeps manuscript management and slide conversion separate.
+
+- `slide-generation.md` describes how manuscripts, layouts, and themes are turned into `slides.md`.
+- `python -m src.cli export <deck-id> --to <format>` exports a managed deck.
+- `python -m src.cli convert <slides.md> --output-dir <dir> --to <format>` converts a completed slide markdown file directly.
+
+`example-deck` is the starter deck under `decks/example-deck/`.
+
+## Commands
 
 ```bash
-# 1. You write the manuscript
-edit src/script.md
-
-# 2. AI agent reads:
-#    - src/prompt.md   (instructions)
-#    - src/script.md   (manuscript)
-#    - src/layouts/    (layout library: one layout per file)
-#    and writes the deck to:
-output/slides.md
-
-# 3. You export slides with Marp via Makefile targets
-make pdf   # output/slides.pdf
-make pptx  # output/slides.pptx
-make html  # output/slides.html
+make pdf DECK=example-deck
+make html DECK=example-deck
+make png DECK=example-deck
+make pptx DECK=example-deck
+make all DECK=example-deck
 ```
 
-The visual style is defined in `src/theme.css` and registered as the `custom-theme` theme, aligned with the `2025-business-pitch-deck` project.
+The direct conversion interface is available through the CLI.
 
-### Makefile Targets
+```bash
+uv run python -m src.cli convert decks/example-deck/slides.md \
+  --output-dir output/example-deck/direct \
+  --theme-file themes/default.css \
+  --to pdf
+```
 
-- `make pdf`: Generate `output/slides.pdf` from `output/slides.md` using Marp.
-- `make pptx`: Generate `output/slides.pptx`.
-- `make html`: Generate `output/slides.html`.
-- `make all`: Generate PDF, PPTX, and HTML in one shot.
+## Development
 
-### Other Commands
-
-- `make help`: Show all available commands.
-- `make test`: Run tests.
-- `make format`: Format code.
-- `make lint`: Run linter.
+- `make help` prints the available targets.
+- `make test` runs the repository test suite.
+- `make format` runs Black and Ruff fixes.
+- `make lint` runs Black and Ruff checks.

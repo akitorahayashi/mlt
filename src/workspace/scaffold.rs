@@ -16,7 +16,9 @@ pub fn create(root: &Path, id: &str) -> AppResult<Workspace> {
     }
 
     fs::create_dir_all(deck_dir.join("assets"))?;
+    fs::create_dir_all(deck_dir.join("artifacts"))?;
     fs::write(deck_dir.join("assets").join(".gitkeep"), "")?;
+    fs::write(deck_dir.join("artifacts").join(".gitkeep"), "")?;
 
     let title = humanize(id);
     fs::write(

@@ -1,6 +1,6 @@
 # build
 target/
 
-# output
-output/*
-!output/.gitkeep
+# generated deck artifacts
+decks/*/artifacts/*
+!decks/*/artifacts/.gitkeep

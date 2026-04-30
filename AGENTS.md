@@ -11,19 +11,18 @@
   - Deck-specific Marp-ready slide source.
 - `decks/<deck-id>/deck.yml`
   - Deck metadata.
+- `decks/<deck-id>/artifacts/`
+  - Deck-specific export outputs.
 - `layouts/`
   - Shared slide patterns grouped by story phase.
 - `themes/default.css`
   - Shared Marp theme. Slide front matter uses `marp-pj-default`.
-- `slide-generation.md`
-  - Canonical instructions for turning manuscripts into slides.
 
 ## Expected Workflow
-1. Read `slide-generation.md`.
-2. Read `decks/<deck-id>/manuscript.md`.
-3. Reuse and adapt the patterns under `layouts/`.
-4. Write a coherent deck to `decks/<deck-id>/slides.md`.
-5. Keep each slide centered on one idea and avoid paragraph-heavy output.
+1. Read `decks/<deck-id>/manuscript.md`.
+2. Reuse and adapt the patterns under `layouts/`.
+3. Write a coherent deck to `decks/<deck-id>/slides.md`.
+4. Keep each slide centered on one idea and avoid paragraph-heavy output.
 
 ## Export Interface
 - Human-facing commands go through `just run ...`.

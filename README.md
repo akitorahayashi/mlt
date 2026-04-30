@@ -10,19 +10,19 @@ decks/<deck-id>/
   manuscript.md
   slides.md
   assets/
+  artifacts/
 
 layouts/
 themes/
 src/
-output/
 ```
 
 - `decks/<deck-id>/manuscript.md` stores the presentation narrative.
 - `decks/<deck-id>/slides.md` stores the Marp-ready slide markdown.
 - `decks/<deck-id>/assets/` stores files that belong only to that deck.
+- `decks/<deck-id>/artifacts/` stores exported files for that deck.
 - `layouts/` stores shared slide patterns.
 - `themes/` stores shared Marp themes.
-- `output/<deck-id>/` stores exported files.
 
 ## Prerequisites
 
@@ -47,7 +47,6 @@ just setup
 
 The repository keeps manuscript management and slide conversion separate.
 
-- `slide-generation.md` describes how manuscripts, layouts, and themes are turned into `slides.md`.
 - `just run decks list` lists valid decks.
 - `just run export <format> <deck-id>` exports a managed deck.
 - `just run convert <format> <slides.md> --output-dir <dir>` converts a completed slide markdown file directly.
@@ -67,7 +66,7 @@ just run export all example-deck
 The direct conversion interface is available through the CLI.
 
 ```bash
-just run convert pdf decks/example-deck/slides.md --output-dir output/example-deck/direct --theme themes/default.css
+just run convert pdf decks/example-deck/slides.md --output-dir decks/example-deck/artifacts/direct --theme themes/default.css
 ```
 
 ## Development

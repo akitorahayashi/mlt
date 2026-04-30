@@ -46,7 +46,7 @@ pub fn resolve(root: &Path, reference: &str) -> AppResult<Workspace> {
     let manuscript_path = deck_dir.join(&manifest.manuscript);
     let slides_path = deck_dir.join(&manifest.slides);
     let theme_path = root.join("themes").join(format!("{}.css", manifest.theme));
-    let output_dir = root.join("output").join(&manifest.deck_id);
+    let output_dir = deck_dir.join("artifacts");
 
     ensure_exists("Manuscript", &manuscript_path)?;
     ensure_exists("Slides", &slides_path)?;

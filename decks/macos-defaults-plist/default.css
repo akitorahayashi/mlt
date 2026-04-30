@@ -1,6 +1,7 @@
 /* @theme marp-pj-default */
 @import 'default';
-@import 'custom.css';
+@import 'css/code.css';
+@import 'theme.css';
 
 /* Base styles for the presentation */
 section {
@@ -123,12 +124,4 @@ code {
   color: #f4f7ff;
   border-radius: 6px;
   padding: 0.12em 0.35em;
-}
-
-pre {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
-  color: #ffffff;
-  margin: 20px;
 }

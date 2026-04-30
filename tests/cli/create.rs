@@ -20,11 +20,13 @@ fn create_scaffolds_default_theme_file() {
         .stdout(predicate::str::contains("new-deck"));
 
     assert!(ctx.root().join("decks/new-deck/default.css").is_file());
-    assert!(ctx.root().join("decks/new-deck/custom.css").is_file());
+    assert!(ctx.root().join("decks/new-deck/theme.css").is_file());
+    assert!(ctx.root().join("decks/new-deck/css/canvas.css").is_file());
+    assert!(ctx.root().join("decks/new-deck/css/code.css").is_file());
     let css_content =
         fs::read_to_string(ctx.root().join("decks/new-deck/default.css")).expect("read css");
     assert!(css_content.contains("@theme marp-pj-default"));
-    assert!(css_content.contains("@import 'custom.css';"));
+    assert!(css_content.contains("@import 'theme.css';"));
 }
 
 #[test]

@@ -7,7 +7,12 @@ use super::resolve;
 use super::Workspace;
 
 const DEFAULT_THEME_CSS: &str = include_str!("../assets/default.css");
-const CUSTOM_THEME_CSS: &str = include_str!("../assets/custom.css");
+const THEME_CSS: &str = include_str!("../assets/theme.css");
+const CANVAS_CSS: &str = include_str!("../assets/css/canvas.css");
+const HEADING_CSS: &str = include_str!("../assets/css/heading.css");
+const LIST_CSS: &str = include_str!("../assets/css/list.css");
+const HIGHLIGHT_CSS: &str = include_str!("../assets/css/highlight.css");
+const CODE_CSS: &str = include_str!("../assets/css/code.css");
 const MANUSCRIPT_TEMPLATE: &str = include_str!("../assets/manuscript.md.tpl");
 const SLIDES_TEMPLATE: &str = include_str!("../assets/slides.md.tpl");
 
@@ -21,10 +26,16 @@ pub fn create(root: &Path, id: &str) -> AppResult<Workspace> {
 
     fs::create_dir_all(deck_dir.join("assets"))?;
     fs::create_dir_all(deck_dir.join("artifacts"))?;
+    fs::create_dir_all(deck_dir.join("css"))?;
     fs::write(deck_dir.join("assets").join(".gitkeep"), "")?;
     fs::write(deck_dir.join("artifacts").join(".gitkeep"), "")?;
     fs::write(deck_dir.join("default.css"), DEFAULT_THEME_CSS)?;
-    fs::write(deck_dir.join("custom.css"), CUSTOM_THEME_CSS)?;
+    fs::write(deck_dir.join("theme.css"), THEME_CSS)?;
+    fs::write(deck_dir.join("css").join("canvas.css"), CANVAS_CSS)?;
+    fs::write(deck_dir.join("css").join("heading.css"), HEADING_CSS)?;
+    fs::write(deck_dir.join("css").join("list.css"), LIST_CSS)?;
+    fs::write(deck_dir.join("css").join("highlight.css"), HIGHLIGHT_CSS)?;
+    fs::write(deck_dir.join("css").join("code.css"), CODE_CSS)?;
     let title = humanize(id);
 
     let manuscript = MANUSCRIPT_TEMPLATE.replace("__TITLE__", &title);

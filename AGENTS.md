@@ -11,14 +11,18 @@
   - Deck-specific Marp-ready slide source.
 - `decks/<deck-id>/default.css`
   - Marp theme entrypoint used on export.
-- `decks/<deck-id>/custom.css`
-  - Deck-specific overrides imported by `default.css`.
+- `decks/<deck-id>/theme.css`
+  - Deck-specific overrides imported last by `default.css`.
+- `decks/<deck-id>/css/`
+  - Scaffolded category CSS imported by `default.css`.
 - `decks/<deck-id>/artifacts/`
   - Deck-specific export outputs.
 - `src/assets/default.css`
   - Scaffold theme entrypoint copied into new decks. Slide front matter uses `marp-pj-default`.
-- `src/assets/custom.css`
+- `src/assets/theme.css`
   - Scaffold override template copied into new decks.
+- `src/assets/css/`
+  - Scaffold category CSS copied into new decks.
 
 ## Expected Workflow
 1. Read `decks/<deck-id>/manuscript.md`.

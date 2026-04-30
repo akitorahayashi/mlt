@@ -1,0 +1,50 @@
+:is(pre, marp-pre) {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  font-weight: 400;
+}
+
+:is(pre, marp-pre) code {
+  color: #c9d1d9;
+  background: transparent;
+  font-weight: 400;
+  line-height: 1.45;
+  padding: 0;
+}
+
+:is(pre, marp-pre) .hljs-keyword,
+:is(pre, marp-pre) .hljs-operator {
+  color: #ff7b72;
+}
+
+:is(pre, marp-pre) .hljs-string {
+  color: #a5d6ff;
+}
+
+:is(pre, marp-pre) .hljs-number,
+:is(pre, marp-pre) .hljs-literal {
+  color: #79c0ff;
+}
+
+:is(pre, marp-pre) .hljs-comment {
+  color: #8b949e;
+}
+
+:is(pre, marp-pre) .hljs-built_in,
+:is(pre, marp-pre) .hljs-symbol,
+:is(pre, marp-pre) .hljs-meta {
+  color: #79c0ff;
+}
+
+:is(pre, marp-pre) .hljs-title,
+:is(pre, marp-pre) .hljs-function,
+:is(pre, marp-pre) .hljs-type,
+:is(pre, marp-pre) .hljs-title.function_ {
+  color: #d2a8ff;
+}
+
+:is(pre, marp-pre) .hljs-variable,
+:is(pre, marp-pre) .hljs-params {
+  color: #ffa657;
+}

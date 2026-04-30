@@ -9,7 +9,8 @@ decks/<deck-id>/
   manuscript.md
   slides.md
   default.css
-  custom.css
+  theme.css
+  css/
   assets/
   artifacts/
 src/
@@ -18,11 +19,13 @@ src/
 - `decks/<deck-id>/manuscript.md` stores the presentation narrative.
 - `decks/<deck-id>/slides.md` stores the Marp-ready slide markdown.
 - `decks/<deck-id>/default.css` is the Marp theme entrypoint.
-- `decks/<deck-id>/custom.css` stores deck-local overrides imported by `default.css`.
+- `decks/<deck-id>/theme.css` stores deck-local overrides imported last by `default.css`.
+- `decks/<deck-id>/css/` stores scaffolded category CSS imported by `default.css`.
 - `decks/<deck-id>/assets/` stores files that belong only to that deck.
 - `decks/<deck-id>/artifacts/` stores exported files for that deck.
-- `src/assets/default.css` stores the scaffold template copied by `create`.
-- `src/assets/custom.css` stores the scaffold template copied by `create`.
+- `src/assets/default.css` stores the theme entrypoint scaffold copied by `create`.
+- `src/assets/theme.css` stores the empty deck override scaffold copied by `create`.
+- `src/assets/css/` stores the category CSS scaffold copied by `create`.
 
 ## Prerequisites
 
@@ -48,7 +51,7 @@ just setup
 The repository keeps manuscript management and slide conversion separate.
 
 - `just run ls` lists valid deck ids.
-- `just run cr <deck-id>` scaffolds a deck directory with `default.css` and `custom.css`.
+- `just run cr <deck-id>` scaffolds a deck directory with `default.css`, `theme.css`, and `css/`.
 - `just run r <deck-id>` exports all supported formats into `decks/<deck-id>/artifacts/`.
 - `just run r <deck-id> [--pdf] [--html] [--pptx]` exports selected formats.
 

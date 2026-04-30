@@ -5,7 +5,6 @@ use crate::error::{AppError, AppResult};
 
 use super::Format;
 
-const CUSTOM_CSS_IMPORT_RULE: &str = "@import 'custom.css';";
 const EXPORT_THEME_FILENAME: &str = ".marp-pj-theme.css";
 
 pub fn export_many(
@@ -85,29 +84,81 @@ fn materialize_theme(theme: Option<&Path>, output_dir: &Path) -> AppResult<Optio
     };
     ensure_exists("Theme", theme_path)?;
 
-    let theme_css = std::fs::read_to_string(theme_path)?;
-    if !theme_css.contains(CUSTOM_CSS_IMPORT_RULE) {
-        return Ok(Some(theme_path.to_path_buf()));
-    };
-
-    let Some(theme_dir) = theme_path.parent() else {
-        return Err(AppError::MissingPath {
-            kind: "Theme directory",
-            path: theme_path.to_path_buf(),
-        });
-    };
-
-    let custom_css_path = theme_dir.join("custom.css");
-    ensure_exists("Custom theme", &custom_css_path)?;
-
-    let custom_css = std::fs::read_to_string(&custom_css_path)?;
     let export_theme_path = output_dir.join(EXPORT_THEME_FILENAME);
-    let theme_css_without_custom_import = theme_css.replace(CUSTOM_CSS_IMPORT_RULE, "");
-    std::fs::write(
-        &export_theme_path,
-        format!("{theme_css_without_custom_import}\n{custom_css}"),
-    )?;
+    let mut import_stack = Vec::new();
+    let expanded_theme_css = expand_theme_css(theme_path, &mut import_stack)?;
+    std::fs::write(&export_theme_path, expanded_theme_css)?;
     Ok(Some(export_theme_path))
+}
+
+fn expand_theme_css(css_path: &Path, import_stack: &mut Vec<PathBuf>) -> AppResult<String> {
+    let canonical_path = std::fs::canonicalize(css_path)?;
+    if let Some(position) = import_stack.iter().position(|path| path == &canonical_path) {
+        let cycle = import_stack[position..]
+            .iter()
+            .chain(std::iter::once(&canonical_path))
+            .map(|path| path.display().to_string())
+            .collect::<Vec<_>>()
+            .join(" -> ");
+        return Err(AppError::ThemeCssImportFailed(format!(
+            "cyclic import chain: {cycle}"
+        )));
+    }
+
+    import_stack.push(canonical_path.clone());
+    let css = std::fs::read_to_string(&canonical_path)?;
+    let base_dir = canonical_path.parent().ok_or_else(|| {
+        AppError::ThemeCssImportFailed(format!(
+            "unable to resolve parent directory for {}",
+            canonical_path.display()
+        ))
+    })?;
+    let mut expanded = String::new();
+
+    for line in css.lines() {
+        if let Some(import_target) = parse_import_target(line) {
+            if import_target == "default" {
+                expanded.push_str(line);
+                expanded.push('\n');
+                continue;
+            }
+
+            let imported_path = base_dir.join(import_target);
+            ensure_exists("Theme import", &imported_path)?;
+            expanded.push_str(&expand_theme_css(&imported_path, import_stack)?);
+            if !expanded.ends_with('\n') {
+                expanded.push('\n');
+            }
+            continue;
+        }
+
+        expanded.push_str(line);
+        expanded.push('\n');
+    }
+
+    import_stack.pop();
+    Ok(expanded)
+}
+
+fn parse_import_target(line: &str) -> Option<&str> {
+    let trimmed = line.trim();
+    let remainder = trimmed.strip_prefix("@import ")?;
+    let quote = if remainder.starts_with('\'') {
+        '\''
+    } else if remainder.starts_with('"') {
+        '"'
+    } else {
+        return None;
+    };
+    let remainder = &remainder[1..];
+    let end = remainder.find(quote)?;
+    let target = &remainder[..end];
+    let suffix = remainder[end + 1..].trim();
+    if suffix == ";" {
+        Some(target)
+    } else {
+        None
+    }
 }
 
 fn ensure_exists(kind: &'static str, path: &Path) -> AppResult<()> {
@@ -125,41 +176,45 @@ mod tests {
     use super::*;
 
     #[test]
-    fn materialize_theme_inlines_deck_custom_css() {
+    fn materialize_theme_inlines_local_css_imports() {
         let temp_dir = tempfile::TempDir::new().expect("temp dir");
         let deck_dir = temp_dir.path().join("deck");
         let output_dir = temp_dir.path().join("artifacts");
+        let css_dir = deck_dir.join("css");
         std::fs::create_dir_all(&deck_dir).expect("deck dir");
         std::fs::create_dir_all(&output_dir).expect("output dir");
+        std::fs::create_dir_all(&css_dir).expect("css dir");
 
         let theme_path = deck_dir.join("default.css");
         std::fs::write(
             &theme_path,
-            "/* @theme marp-pj-default */\n@import 'default';\n@import 'custom.css';\nsection { color: white; }\n",
+            "/* @theme marp-pj-default */\n@import 'default';\n@import 'css/code.css';\n@import 'theme.css';\nsection { color: white; }\n",
         )
         .expect("theme css");
         std::fs::write(
-            deck_dir.join("custom.css"),
-            "section pre .hljs-keyword { color: #ff7b72; }\n",
+            css_dir.join("code.css"),
+            ":is(pre, marp-pre) .hljs-keyword { color: #ff7b72; }\n",
         )
-        .expect("custom css");
+        .expect("code css");
+        std::fs::write(deck_dir.join("theme.css"), "section { color: #111111; }\n")
+            .expect("theme css");
 
         let export_theme = materialize_theme(Some(&theme_path), &output_dir)
             .expect("materialize theme")
             .expect("theme path");
         let export_css = std::fs::read_to_string(export_theme).expect("export theme css");
 
-        assert!(!export_css.contains(CUSTOM_CSS_IMPORT_RULE));
         assert!(export_css.contains("@import 'default';"));
-        assert!(export_css.contains("section pre .hljs-keyword { color: #ff7b72; }"));
+        assert!(export_css.contains(":is(pre, marp-pre) .hljs-keyword { color: #ff7b72; }"));
+        assert!(export_css.contains("section { color: #111111; }"));
         assert!(
-            export_css.find("section { color: white; }")
-                < export_css.find("section pre .hljs-keyword")
+            export_css.find(":is(pre, marp-pre) .hljs-keyword")
+                < export_css.find("section { color: #111111; }")
         );
     }
 
     #[test]
-    fn materialize_theme_requires_imported_custom_css() {
+    fn materialize_theme_requires_imported_theme_file() {
         let temp_dir = tempfile::TempDir::new().expect("temp dir");
         let deck_dir = temp_dir.path().join("deck");
         let output_dir = temp_dir.path().join("artifacts");
@@ -169,16 +224,16 @@ mod tests {
         let theme_path = deck_dir.join("default.css");
         std::fs::write(
             &theme_path,
-            "/* @theme marp-pj-default */\n@import 'custom.css';\nsection { color: white; }\n",
+            "/* @theme marp-pj-default */\n@import 'theme.css';\nsection { color: white; }\n",
         )
         .expect("theme css");
 
-        let error = materialize_theme(Some(&theme_path), &output_dir).expect_err("missing custom");
+        let error = materialize_theme(Some(&theme_path), &output_dir).expect_err("missing theme");
 
         assert!(matches!(
             error,
             AppError::MissingPath {
-                kind: "Custom theme",
+                kind: "Theme import",
                 ..
             }
         ));

@@ -20,4 +20,6 @@ pub enum AppError {
     MissingPath { kind: &'static str, path: PathBuf },
     #[error("Marp command failed: {0}")]
     MarpCommandFailed(String),
+    #[error("Theme CSS import failed: {0}")]
+    ThemeCssImportFailed(String),
 }

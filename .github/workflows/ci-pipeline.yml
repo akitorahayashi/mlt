@@ -7,9 +7,12 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  format-and-lint:
-    uses: ./.github/workflows/format-and-lint.yml
+  run-static-checks:
+    uses: ./.github/workflows/run-static-checks.yml
 
   run-tests:
     uses: ./.github/workflows/run-tests.yml

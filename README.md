@@ -1,63 +1,73 @@
 ## Overview
 
-A Python project for creating presentation slides using Marp CLI.
+This repository manages presentation source files by deck and exports Marp slide markdown through a local Rust CLI.
 
-## Usage
+## Structure
 
-### Prerequisites
+```text
+decks/<deck-id>/
+  manuscript.md
+  slides.md
+  default.css
+  assets/
+  artifacts/
 
-- Python 3.12+
-- [uv](https://github.com/astral-sh/uv)
+layouts/
+src/
+```
+
+- `decks/<deck-id>/manuscript.md` stores the presentation narrative.
+- `decks/<deck-id>/slides.md` stores the Marp-ready slide markdown.
+- `decks/<deck-id>/default.css` stores the deck-local Marp theme.
+- `decks/<deck-id>/assets/` stores files that belong only to that deck.
+- `decks/<deck-id>/artifacts/` stores exported files for that deck.
+- `layouts/` stores shared slide patterns.
+- `src/assets/default.css` stores the scaffold template copied by `create`.
+
+## Prerequisites
+
+- Rust toolchain
 - [marp-cli](https://github.com/marp-team/marp-cli)
+- [just](https://github.com/casey/just)
 
-You can install `marp-cli` with Homebrew or npm.
+An npm installation of Marp CLI and a Homebrew installation of `just` are compatible with the current commands.
 
 ```bash
-# npm
 npm install -g @marp-team/marp-cli
+brew install just
 ```
 
-### Setup
-
-Install project dependencies.
+## Setup
 
 ```bash
-make setup
+just setup
 ```
 
-### Workflow Overview
+## Deck Workflow
 
-This project is designed so that an AI agent (e.g., Codex) generates the actual slide deck.
+The repository keeps manuscript management and slide conversion separate.
+
+- `just run list` lists valid deck ids.
+- `just run create <deck-id>` scaffolds a deck directory with `default.css`.
+- `just run run <deck-id>` exports all supported formats into `decks/<deck-id>/artifacts/`.
+- `just run run <deck-id> [--pdf] [--html] [--png] [--pptx]` exports selected formats.
+
+`example-deck` is the starter deck under `decks/example-deck/`.
+
+## Commands
 
 ```bash
-# 1. You write the manuscript
-edit src/script.md
-
-# 2. AI agent reads:
-#    - src/prompt.md   (instructions)
-#    - src/script.md   (manuscript)
-#    - src/layouts/    (layout library: one layout per file)
-#    and writes the deck to:
-output/slides.md
-
-# 3. You export slides with Marp via Makefile targets
-make pdf   # output/slides.pdf
-make pptx  # output/slides.pptx
-make html  # output/slides.html
+just run list
+just run create kyoto-go-64
+just run run example-deck
+just run run example-deck --pdf
+just run run example-deck --html --pdf
 ```
 
-The visual style is defined in `src/theme.css` and registered as the `custom-theme` theme, aligned with the `2025-business-pitch-deck` project.
+## Development
 
-### Makefile Targets
-
-- `make pdf`: Generate `output/slides.pdf` from `output/slides.md` using Marp.
-- `make pptx`: Generate `output/slides.pptx`.
-- `make html`: Generate `output/slides.html`.
-- `make all`: Generate PDF, PPTX, and HTML in one shot.
-
-### Other Commands
-
-- `make help`: Show all available commands.
-- `make test`: Run tests.
-- `make format`: Format code.
-- `make lint`: Run linter.
+- `just help` prints the available recipes.
+- `just run ...` invokes the local CLI through `cargo run --`.
+- `just test` runs the Rust test suite.
+- `just fix` runs `cargo fmt` and `cargo clippy --fix`.
+- `just check` runs `cargo fmt --check` and `cargo clippy`.

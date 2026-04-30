@@ -1,6 +1,6 @@
 /* @theme marp-pj-default */
 @import 'default';
-@import 'custom.css';
+@import '../custom.css';
 
 section {
   background-color: #ffffff;

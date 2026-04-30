@@ -1,6 +1,6 @@
 /* @theme marp-pj-default */
 @import 'default';
-@import 'custom.css';
+@import '../custom.css';
 
 /* Base styles for the presentation */
 section {

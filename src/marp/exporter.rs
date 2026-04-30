@@ -20,9 +20,17 @@ pub fn export_many(
     theme: Option<&Path>,
     formats: &[Format],
 ) -> AppResult<Vec<PathBuf>> {
+    std::fs::create_dir_all(output_dir)?;
+    let export_theme = materialize_theme(theme, output_dir)?;
     let mut exported = Vec::new();
     for format in formats {
-        exported.push(export(slides_path, output_dir, basename, theme, format)?);
+        exported.push(export(
+            slides_path,
+            output_dir,
+            basename,
+            &export_theme,
+            format,
+        )?);
     }
     Ok(exported)
 }
@@ -31,12 +39,10 @@ fn export(
     slides_path: &Path,
     output_dir: &Path,
     basename: &str,
-    theme: Option<&Path>,
+    export_theme: &Option<PathBuf>,
     format: &Format,
 ) -> AppResult<PathBuf> {
     ensure_exists("Slides", slides_path)?;
-    std::fs::create_dir_all(output_dir)?;
-    let export_theme = materialize_theme(theme, output_dir)?;
     let output_path = output_dir.join(format!("{basename}.{}", (*format).extension()));
 
     let mut command = Command::new("marp");
@@ -194,7 +200,10 @@ fn expand_theme_css(css_path: &Path, import_stack: &mut Vec<PathBuf>) -> AppResu
 
 fn parse_import_target(line: &str) -> Option<&str> {
     let trimmed = line.trim();
-    let remainder = trimmed.strip_prefix("@import ")?;
+    if !trimmed.starts_with("@import") {
+        return None;
+    }
+    let remainder = trimmed["@import".len()..].trim_start();
     let quote = if remainder.starts_with('\'') {
         '\''
     } else if remainder.starts_with('"') {
@@ -205,8 +214,8 @@ fn parse_import_target(line: &str) -> Option<&str> {
     let remainder = &remainder[1..];
     let end = remainder.find(quote)?;
     let target = &remainder[..end];
-    let suffix = remainder[end + 1..].trim();
-    if suffix == ";" {
+    let after_quote = remainder[end + 1..].trim();
+    if after_quote.starts_with(';') {
         Some(target)
     } else {
         None

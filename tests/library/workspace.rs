@@ -17,7 +17,7 @@ fn create_then_resolve_roundtrip() {
     );
     assert_eq!(
         resolved.theme_path.file_name().unwrap_or_default(),
-        "default.css"
+        "theme.css"
     );
 }
 

@@ -5,6 +5,12 @@ use crate::error::{AppError, AppResult};
 
 use super::Format;
 
+const DEFAULT_THEME_CSS: &str = include_str!("../assets/default.css");
+const CANVAS_CSS: &str = include_str!("../assets/css/canvas.css");
+const HEADING_CSS: &str = include_str!("../assets/css/heading.css");
+const LIST_CSS: &str = include_str!("../assets/css/list.css");
+const HIGHLIGHT_CSS: &str = include_str!("../assets/css/highlight.css");
+const CODE_CSS: &str = include_str!("../assets/css/code.css");
 const EXPORT_THEME_FILENAME: &str = ".marp-pj-theme.css";
 
 pub fn export_many(
@@ -79,16 +85,68 @@ fn export(
 }
 
 fn materialize_theme(theme: Option<&Path>, output_dir: &Path) -> AppResult<Option<PathBuf>> {
-    let Some(theme_path) = theme else {
+    let Some(theme_override_path) = theme else {
         return Ok(None);
     };
-    ensure_exists("Theme", theme_path)?;
+    ensure_exists("Theme", theme_override_path)?;
 
     let export_theme_path = output_dir.join(EXPORT_THEME_FILENAME);
     let mut import_stack = Vec::new();
-    let expanded_theme_css = expand_theme_css(theme_path, &mut import_stack)?;
+    let expanded_theme_css = expand_shared_theme(theme_override_path, &mut import_stack)?;
     std::fs::write(&export_theme_path, expanded_theme_css)?;
     Ok(Some(export_theme_path))
+}
+
+fn expand_shared_theme(
+    theme_override_path: &Path,
+    import_stack: &mut Vec<PathBuf>,
+) -> AppResult<String> {
+    let mut expanded = String::new();
+
+    for line in DEFAULT_THEME_CSS.lines() {
+        if let Some(import_target) = parse_import_target(line) {
+            match import_target {
+                "default" => {
+                    expanded.push_str(line);
+                    expanded.push('\n');
+                }
+                "theme.css" => {
+                    expanded.push_str(&expand_theme_css(theme_override_path, import_stack)?);
+                    if !expanded.ends_with('\n') {
+                        expanded.push('\n');
+                    }
+                }
+                asset_path => {
+                    let asset_css = shared_theme_asset(asset_path).ok_or_else(|| {
+                        AppError::ThemeCssImportFailed(format!(
+                            "unknown shared theme asset import: {asset_path}"
+                        ))
+                    })?;
+                    expanded.push_str(asset_css);
+                    if !asset_css.ends_with('\n') {
+                        expanded.push('\n');
+                    }
+                }
+            }
+            continue;
+        }
+
+        expanded.push_str(line);
+        expanded.push('\n');
+    }
+
+    Ok(expanded)
+}
+
+fn shared_theme_asset(path: &str) -> Option<&'static str> {
+    match path {
+        "css/canvas.css" => Some(CANVAS_CSS),
+        "css/heading.css" => Some(HEADING_CSS),
+        "css/list.css" => Some(LIST_CSS),
+        "css/highlight.css" => Some(HIGHLIGHT_CSS),
+        "css/code.css" => Some(CODE_CSS),
+        _ => None,
+    }
 }
 
 fn expand_theme_css(css_path: &Path, import_stack: &mut Vec<PathBuf>) -> AppResult<String> {
@@ -117,12 +175,6 @@ fn expand_theme_css(css_path: &Path, import_stack: &mut Vec<PathBuf>) -> AppResu
 
     for line in css.lines() {
         if let Some(import_target) = parse_import_target(line) {
-            if import_target == "default" {
-                expanded.push_str(line);
-                expanded.push('\n');
-                continue;
-            }
-
             let imported_path = base_dir.join(import_target);
             ensure_exists("Theme import", &imported_path)?;
             expanded.push_str(&expand_theme_css(&imported_path, import_stack)?);
@@ -180,24 +232,17 @@ mod tests {
         let temp_dir = tempfile::TempDir::new().expect("temp dir");
         let deck_dir = temp_dir.path().join("deck");
         let output_dir = temp_dir.path().join("artifacts");
-        let css_dir = deck_dir.join("css");
         std::fs::create_dir_all(&deck_dir).expect("deck dir");
         std::fs::create_dir_all(&output_dir).expect("output dir");
-        std::fs::create_dir_all(&css_dir).expect("css dir");
 
-        let theme_path = deck_dir.join("default.css");
+        let theme_path = deck_dir.join("theme.css");
+        std::fs::write(deck_dir.join("extra.css"), "section { color: #111111; }\n")
+            .expect("extra css");
         std::fs::write(
             &theme_path,
-            "/* @theme marp-pj-default */\n@import 'default';\n@import 'css/code.css';\n@import 'theme.css';\nsection { color: white; }\n",
+            "@import 'extra.css';\nsection { letter-spacing: 0; }\n",
         )
         .expect("theme css");
-        std::fs::write(
-            css_dir.join("code.css"),
-            ":is(pre, marp-pre) .hljs-keyword { color: #ff7b72; }\n",
-        )
-        .expect("code css");
-        std::fs::write(deck_dir.join("theme.css"), "section { color: #111111; }\n")
-            .expect("theme css");
 
         let export_theme = materialize_theme(Some(&theme_path), &output_dir)
             .expect("materialize theme")
@@ -205,8 +250,9 @@ mod tests {
         let export_css = std::fs::read_to_string(export_theme).expect("export theme css");
 
         assert!(export_css.contains("@import 'default';"));
-        assert!(export_css.contains(":is(pre, marp-pre) .hljs-keyword { color: #ff7b72; }"));
+        assert!(export_css.contains(":is(pre, marp-pre) .hljs-keyword"));
         assert!(export_css.contains("section { color: #111111; }"));
+        assert!(export_css.contains("section { letter-spacing: 0; }"));
         assert!(
             export_css.find(":is(pre, marp-pre) .hljs-keyword")
                 < export_css.find("section { color: #111111; }")
@@ -221,12 +267,8 @@ mod tests {
         std::fs::create_dir_all(&deck_dir).expect("deck dir");
         std::fs::create_dir_all(&output_dir).expect("output dir");
 
-        let theme_path = deck_dir.join("default.css");
-        std::fs::write(
-            &theme_path,
-            "/* @theme marp-pj-default */\n@import 'theme.css';\nsection { color: white; }\n",
-        )
-        .expect("theme css");
+        let theme_path = deck_dir.join("theme.css");
+        std::fs::write(&theme_path, "@import 'missing.css';\n").expect("theme css");
 
         let error = materialize_theme(Some(&theme_path), &output_dir).expect_err("missing theme");
 

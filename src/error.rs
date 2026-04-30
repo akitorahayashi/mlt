@@ -14,6 +14,8 @@ pub enum AppError {
     DeckNotFound(String),
     #[error("Deck already exists: {0}")]
     DeckAlreadyExists(String),
+    #[error("Invalid deck path: {0}")]
+    InvalidDeckPath(PathBuf),
     #[error("{kind} path is missing or has an invalid type: {path}")]
     MissingPath { kind: &'static str, path: PathBuf },
     #[error("Marp command failed: {0}")]

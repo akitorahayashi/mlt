@@ -48,8 +48,8 @@ fn execute_command(command: Command) -> AppResult<()> {
     match command {
         Command::Create { id } => {
             let root = env::current_dir()?;
-            let workspace = create::run(&root, &id)?;
-            println!("{}", workspace.deck_dir.display());
+            let deck_layout = create::run(&root, &id)?;
+            println!("{}", deck_layout.deck_dir.display());
             Ok(())
         }
         Command::Run {

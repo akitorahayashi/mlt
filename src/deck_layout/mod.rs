@@ -17,6 +17,8 @@ pub fn resolve_dir(deck_dir: &Path) -> AppResult<DeckLayout> {
         return Err(AppError::DeckNotFound(deck_dir.display().to_string()));
     }
 
+    let deck_dir = deck_dir.canonicalize()?;
+
     let manuscript_path = deck_dir.join("manuscript.md");
     let slides_path = deck_dir.join("slides.md");
     let theme_path = deck_dir.join("theme.css");
@@ -29,9 +31,10 @@ pub fn resolve_dir(deck_dir: &Path) -> AppResult<DeckLayout> {
 
     let deck_id = deck_dir
         .file_name()
-        .map(|s| s.to_string_lossy().to_string())
+        .and_then(|s| s.to_str())
         .filter(|id| !id.is_empty())
-        .unwrap_or_else(|| "slides".to_string());
+        .map(|id| id.to_string())
+        .ok_or_else(|| AppError::InvalidDeckPath(deck_dir.clone()))?;
 
     Ok(DeckLayout {
         deck_id,

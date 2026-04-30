@@ -9,14 +9,14 @@
   - Deck-specific manuscript and speaking material.
 - `decks/<deck-id>/slides.md`
   - Deck-specific Marp-ready slide source.
-- `decks/<deck-id>/deck.yml`
-  - Deck metadata.
+- `decks/<deck-id>/default.css`
+  - Deck-specific Marp theme file used on export.
 - `decks/<deck-id>/artifacts/`
   - Deck-specific export outputs.
 - `layouts/`
   - Shared slide patterns grouped by story phase.
-- `themes/default.css`
-  - Shared Marp theme. Slide front matter uses `marp-pj-default`.
+- `src/assets/default.css`
+  - Scaffold template copied into new decks. Slide front matter uses `marp-pj-default`.
 
 ## Expected Workflow
 1. Read `decks/<deck-id>/manuscript.md`.
@@ -27,10 +27,10 @@
 ## Export Interface
 - Human-facing commands go through `just run ...`.
 - Common commands:
-  - `just run decks list`
-  - `just run decks show <deck-id>`
-  - `just run export <format> <deck-id>`
-  - `just run convert <format> <slides-path> --output-dir <dir>`
+  - `just run list`
+  - `just run create <deck-id>`
+  - `just run run <deck-id>`
+  - `just run run <deck-id> --format <pdf|html|png|pptx>`
 
 ## Structural Changes
 - Structural slide changes belong in `layouts/`, not as one-off edits to generated deck content.

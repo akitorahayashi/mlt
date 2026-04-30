@@ -3,9 +3,10 @@ use std::path::Path;
 
 use crate::error::{AppError, AppResult};
 
-use super::manifest::validate_id;
 use super::resolve;
 use super::Workspace;
+
+const DEFAULT_THEME_CSS: &str = include_str!("../assets/default.css");
 
 pub fn create(root: &Path, id: &str) -> AppResult<Workspace> {
     validate_id(id)?;
@@ -19,19 +20,8 @@ pub fn create(root: &Path, id: &str) -> AppResult<Workspace> {
     fs::create_dir_all(deck_dir.join("artifacts"))?;
     fs::write(deck_dir.join("assets").join(".gitkeep"), "")?;
     fs::write(deck_dir.join("artifacts").join(".gitkeep"), "")?;
-
+    fs::write(deck_dir.join("default.css"), DEFAULT_THEME_CSS)?;
     let title = humanize(id);
-    fs::write(
-        deck_dir.join("deck.yml"),
-        format!(
-            "deck_id: {id}\n\
-title: {title}\n\
-theme: default\n\
-slides: slides.md\n\
-manuscript: manuscript.md\n\
-output_basename: slides\n"
-        ),
-    )?;
 
     fs::write(
         deck_dir.join("manuscript.md"),
@@ -60,6 +50,33 @@ Deck scaffold for `{id}`.\n"
     )?;
 
     resolve(root, id)
+}
+
+pub fn validate_id(value: &str) -> AppResult<()> {
+    if is_lower_kebab_case(value) {
+        return Ok(());
+    }
+    Err(AppError::InvalidDeckId(value.to_string()))
+}
+
+fn is_lower_kebab_case(value: &str) -> bool {
+    let mut parts = value.split('-');
+    let Some(first) = parts.next() else {
+        return false;
+    };
+    if first.is_empty()
+        || !first
+            .chars()
+            .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
+    {
+        return false;
+    }
+    parts.all(|part| {
+        !part.is_empty()
+            && part
+                .chars()
+                .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
+    })
 }
 
 fn humanize(id: &str) -> String {

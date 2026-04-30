@@ -9,11 +9,15 @@ fn create_then_resolve_roundtrip() {
     let created = workspace::create(ctx.root(), "kyoto-go-64").expect("create deck");
     let resolved = workspace::resolve(ctx.root(), "kyoto-go-64").expect("resolve deck");
 
-    assert_eq!(created.manifest.deck_id, "kyoto-go-64");
-    assert_eq!(resolved.manifest.title, "Kyoto Go 64");
+    assert_eq!(created.deck_id, "kyoto-go-64");
+    assert_eq!(resolved.deck_id, "kyoto-go-64");
     assert_eq!(
         resolved.slides_path.file_name().unwrap_or_default(),
         "slides.md"
+    );
+    assert_eq!(
+        resolved.theme_path.file_name().unwrap_or_default(),
+        "default.css"
     );
 }
 
@@ -26,5 +30,5 @@ fn list_returns_only_valid_entries() {
     let entries = workspace::list(ctx.root()).expect("list decks");
 
     assert_eq!(entries.len(), 1);
-    assert_eq!(entries[0].id, "example-deck");
+    assert_eq!(entries[0], "example-deck");
 }

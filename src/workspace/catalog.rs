@@ -5,13 +5,7 @@ use crate::error::AppResult;
 
 use super::resolve;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Entry {
-    pub id: String,
-    pub title: String,
-}
-
-pub fn list(root: &Path) -> AppResult<Vec<Entry>> {
+pub fn list(root: &Path) -> AppResult<Vec<String>> {
     let decks_dir = root.join("decks");
     let mut ids = Vec::new();
 
@@ -23,15 +17,12 @@ pub fn list(root: &Path) -> AppResult<Vec<Entry>> {
     }
     ids.sort();
 
-    let mut entries = Vec::new();
+    let mut valid_ids = Vec::new();
     for id in ids {
-        if let Ok(workspace) = resolve(root, &id) {
-            entries.push(Entry {
-                id: workspace.manifest.deck_id,
-                title: workspace.manifest.title,
-            });
+        if resolve(root, &id).is_ok() {
+            valid_ids.push(id);
         }
     }
 
-    Ok(entries)
+    Ok(valid_ids)
 }

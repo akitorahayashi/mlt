@@ -17,17 +17,11 @@ impl TestContext {
         let temp_dir = TempDir::new().expect("temp dir");
         let root = temp_dir.path().join("workspace");
         fs::create_dir_all(root.join("decks")).expect("create decks");
-        fs::create_dir_all(root.join("themes")).expect("create themes");
         fs::write(
             root.join("Cargo.toml"),
             "[package]\nname = 'fixture'\nversion = '0.0.0'\n",
         )
         .expect("create cargo");
-        fs::write(
-            root.join("themes").join("default.css"),
-            "/* @theme marp-pj-default */\n@import 'default';\n",
-        )
-        .expect("create theme");
         Self {
             _temp_dir: temp_dir,
             root,

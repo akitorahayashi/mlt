@@ -10,7 +10,7 @@ fn help_lists_primary_commands() {
         .arg("--help")
         .assert()
         .success()
-        .stdout(predicate::str::contains("decks"))
-        .stdout(predicate::str::contains("export"))
-        .stdout(predicate::str::contains("convert"));
+        .stdout(predicate::str::contains("list"))
+        .stdout(predicate::str::contains("create"))
+        .stdout(predicate::str::contains("run"));
 }

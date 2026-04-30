@@ -1,28 +1,28 @@
 ## Overview
 
-This repository manages presentation source files by deck and exports completed Marp slide markdown through a local Rust CLI.
+This repository manages presentation source files by deck and exports Marp slide markdown through a local Rust CLI.
 
 ## Structure
 
 ```text
 decks/<deck-id>/
-  deck.yml
   manuscript.md
   slides.md
+  default.css
   assets/
   artifacts/
 
 layouts/
-themes/
 src/
 ```
 
 - `decks/<deck-id>/manuscript.md` stores the presentation narrative.
 - `decks/<deck-id>/slides.md` stores the Marp-ready slide markdown.
+- `decks/<deck-id>/default.css` stores the deck-local Marp theme.
 - `decks/<deck-id>/assets/` stores files that belong only to that deck.
 - `decks/<deck-id>/artifacts/` stores exported files for that deck.
 - `layouts/` stores shared slide patterns.
-- `themes/` stores shared Marp themes.
+- `src/assets/default.css` stores the scaffold template copied by `create`.
 
 ## Prerequisites
 
@@ -47,26 +47,20 @@ just setup
 
 The repository keeps manuscript management and slide conversion separate.
 
-- `just run decks list` lists valid decks.
-- `just run export <format> <deck-id>` exports a managed deck.
-- `just run convert <format> <slides.md> --output-dir <dir>` converts a completed slide markdown file directly.
+- `just run list` lists valid deck ids.
+- `just run create <deck-id>` scaffolds a deck directory with `default.css`.
+- `just run run <deck-id>` exports all supported formats into `decks/<deck-id>/artifacts/`.
+- `just run run <deck-id> --format <pdf|html|png|pptx>` exports one format.
 
 `example-deck` is the starter deck under `decks/example-deck/`.
 
 ## Commands
 
 ```bash
-just run decks list
-just run decks show example-deck
-just run decks create kyoto-go-64
-just run export pdf example-deck
-just run export all example-deck
-```
-
-The direct conversion interface is available through the CLI.
-
-```bash
-just run convert pdf decks/example-deck/slides.md --output-dir decks/example-deck/artifacts/direct --theme themes/default.css
+just run list
+just run create kyoto-go-64
+just run run example-deck
+just run run example-deck --format pdf
 ```
 
 ## Development

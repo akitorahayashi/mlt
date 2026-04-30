@@ -1,5 +1,3 @@
-use clap::ValueEnum;
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Format {
     Pdf,
@@ -21,22 +19,16 @@ impl Format {
     }
 }
 
-#[derive(Debug, Clone, Copy, ValueEnum)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Target {
-    Pdf,
-    Html,
-    Png,
-    Pptx,
+    Single(Format),
     All,
 }
 
 impl Target {
     pub fn formats(self) -> Vec<Format> {
         match self {
-            Self::Pdf => vec![Format::Pdf],
-            Self::Html => vec![Format::Html],
-            Self::Png => vec![Format::Png],
-            Self::Pptx => vec![Format::Pptx],
+            Self::Single(format) => vec![format],
             Self::All => Format::ALL.to_vec(),
         }
     }

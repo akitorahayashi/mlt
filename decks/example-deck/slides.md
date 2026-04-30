@@ -21,4 +21,5 @@ The completed slide markdown for this deck lives here.
 
 - `manuscript.md` stores the presentation narrative.
 - `slides.md` stores Marp-ready slides.
+- `default.css` stores the deck-local Marp theme.
 - `assets/` stores deck-specific files.

@@ -1,13 +1,15 @@
 .highlight {
-  background-color: #e8f4fd;
+  background: rgba(255, 255, 255, 0.05);
   padding: 20px;
-  border-left: 5px solid #2c5aa0;
+  border-left: 5px solid #5f87ff;
   margin: 20px 0;
 }
 
 blockquote {
-  border-left: 5px solid #2c5aa0;
-  background-color: #e8f4fd;
-  padding: 15px;
-  margin: 20px 0;
+  border-left: 5px solid #5f87ff;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0 12px 12px 0;
+  color: #ffffff;
+  padding: 16px;
+  margin: 20px;
 }

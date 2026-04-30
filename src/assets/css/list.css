@@ -1,8 +1,8 @@
 ul,
 ol {
-  margin-left: 20px;
+  margin: 0;
 }
 
 li {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }

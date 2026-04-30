@@ -15,7 +15,7 @@
   - Deck-specific export outputs.
 - `src/assets/default.css`
   - Shared theme entrypoint used on export. Slide front matter uses `marp-pj-default`.
-- `src/assets/theme.css`
+- `src/assets/theme.css.tpl`
   - Scaffold override template copied into new decks.
 - `src/assets/css/`
   - Shared category CSS used on export.

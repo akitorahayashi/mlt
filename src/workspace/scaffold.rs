@@ -6,7 +6,7 @@ use crate::error::{AppError, AppResult};
 use super::resolve;
 use super::Workspace;
 
-const THEME_CSS: &str = include_str!("../assets/theme.css");
+const THEME_CSS: &str = include_str!("../assets/theme.css.tpl");
 const MANUSCRIPT_TEMPLATE: &str = include_str!("../assets/manuscript.md.tpl");
 const SLIDES_TEMPLATE: &str = include_str!("../assets/slides.md.tpl");
 

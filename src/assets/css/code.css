@@ -11,6 +11,7 @@ code {
   border-radius: 4px;
   color: #c9d1d9;
   font-weight: 400;
+  margin: 18px 16px;
 }
 
 :is(pre, marp-pre) code {

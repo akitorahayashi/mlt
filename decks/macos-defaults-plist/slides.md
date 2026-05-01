@@ -8,94 +8,123 @@ footer: ''
 
 <!-- _class: title-slide -->
 
-# macOS defaults<br>plist 運用の実践
+# macOS の設定は<br>覚えるより<br>defaults で再現しよう
 
 <div class="my-name">林 明虎</div>
 <p class="talk-meta">2026/4/30 夕会 LT会</p>
 
 ---
 
-# 今日のゴール
+# 目次
 
-- `defaults` と `.plist` の役割分担を理解する
-- 直接編集が危険な理由を説明できるようにする
-- チームで使える運用ルールに落とす
-
----
-
-# 前提: 全キー一覧は存在しない
-
-- Apple 公式の「全 defaults キー一覧」はない
-- 設定キーは OS / アプリ更新で変動する
-- 固定リストより「探索手順」の整備が重要
+- `defaults` で何ができるか
+- `defaults`のドメインと `.plist`
+- 安全に設定を探して反映する流れ
+- よく使う設定をまとめてスクリプト化する
 
 ---
 
-# 設定を探す基本コマンド
+# `defaults` で何ができるか
 
-```bash
-defaults domains
+```sh
 defaults read com.apple.finder
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
 ```
 
-- `domains` で存在ドメインを列挙
-- `read` で現在値を確認
-- 外部チートシートは補助、最終判断はローカル検証
+<div style="height: 40px;"></div>
+
+- macOS の設定を読む、書くための標準コマンド
+- 設定アプリを毎回開かずに操作できる
+- 複数端末の設定をそろえるのに向いている
 
 ---
 
-# 設定保存の実態
+# ドメイン
 
-- 設定ファイルは初回起動や設定変更時に作られる
-- 未設定項目はアプリ内デフォルト値が使われる
-- 実体は `~/Library/Preferences/com.vendor.app.plist`
-- 独自ドメインの作成も可能（命名衝突は回避必須）
+<p style="margin: 32px;">ドメイン は 設定を管理する単位</p>
 
----
-
-# なぜ plist が読めないのか
-
-- 多くの `.plist` はバイナリ形式
-- 通常エディタでは可読性が低い
-- 可読化には `plutil` を使う
-
-```rust
-fn main() {
-    let app = "Finder";
-    let path = format!("~/Library/Preferences/com.apple.{app}.plist");
-
-    println!("target: {path}");
-}
-```
+- `com.apple.dock` は Dock の設定
+- `com.apple.finder` は Finder の設定
+- `NSGlobalDomain` はユーザ全体に効く設定
 
 ---
 
-# 直接編集のリスク
+# 設定ファイルの実体
 
-> 直接編集は最後の手段
+- 設定は `.plist` ファイルとして保存される
+- 多くの場合はバイナリ形式で直接読みにくい
+- 直接編集より `defaults` を使うほうが安全
 
-<div style="height: 64px;"></div>
-
-- `cfprefsd` が設定をキャッシュしている
-- ファイル直編集だけでは反映されないことがある
-- 古いキャッシュで上書きされる可能性がある
-
----
-
-# 推奨運用
-
-- 設定変更は原則 `defaults`
-- 直接編集は例外対応に限定
-- 例外時はキャッシュ整合を明示的に行う
-
-```bash
-killall cfprefsd
+```text
+~/Library/Preferences/com.apple.finder.plist # ユーザレベル
+/Library/Preferences/ # この領域の書き換えには管理者権限（sudo）が必要
+~/Library/Containers/.../Data/Library/Preferences/ # アプリレベル
 ```
 
 ---
 
-# 結論
+# 直接編集が危ない理由
 
-- 「値の場所」より「変更経路」が重要
-- 安全経路は `defaults`、直接編集は最後の手段
-- チーム標準として運用ルールを明文化する
+- macOS は `cfprefsd` で設定をキャッシュしている
+  → ファイルを手で書き換えても反映されないことがある
+- `defaults write` はキャッシュ更新まで面倒を見る
+
+---
+
+# どうやって探すか
+
+```sh
+defaults read com.apple.dock
+defaults write com.apple.dock tilesize -int 30
+```
+
+- まず `defaults read` で現在値を確認する
+- 値がありそうなら `defaults write` で反映する
+- 全キー一覧はないので、検索と検証を組み合わせる
+
+---
+
+# 実行方法
+
+```sh
+defaults write [ドメイン名] [キー] -[型] [値]
+```
+
+<div style="text-align: center;">具体例</div>
+
+```sh
+defaults write com.apple.dock tilesize -int 30
+killall Dock
+```
+
+```sh
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+killall Finder
+```
+
+---
+
+<h1 style="top: 48px;">シェルスクリプトにまとめる</h1>
+
+```sh
+#!/usr/bin/env bash
+set -euo pipefail
+
+defaults write com.apple.dock tilesize -int 30
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+
+killall Dock
+killall Finder
+```
+
+- よく使う設定は 1 回で流せる形にしておく
+- 初期化後の復元や複数端末への展開が楽になる
+- 変更履歴を git で管理
+
+---
+
+# まとめ
+
+- `defaults` を使うと、設定アプリで毎回探さなくても設定をコマンドで再現できる
+- macbook や mac mini など複数の macOS デバイスで設定を統一できる
+- 新しい Mac やクリーンインストール後でも、同じ設定を短時間で戻せる

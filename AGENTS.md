@@ -13,12 +13,8 @@
   - Deck-specific overrides layered on the shared theme during export.
 - `decks/<deck-id>/artifacts/`
   - Deck-specific export outputs.
-- `src/assets/default.css`
-  - Shared theme entrypoint used on export. Slide front matter uses `mlt-default`.
-- `src/assets/theme.css.tpl`
-  - Scaffold override template copied into new decks.
 - `src/assets/css/`
-  - Shared category CSS used on export.
+  - Shared category CSS bundled into the exported theme at build time.
 
 ## Expected Workflow
 1. Read `decks/<deck-id>/manuscript.md`.

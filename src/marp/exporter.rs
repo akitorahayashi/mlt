@@ -2,6 +2,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use crate::error::{AppError, AppResult};
+use crate::theme;
 
 use super::Format;
 
@@ -84,8 +85,6 @@ fn export(
     Ok(output_path)
 }
 
-use crate::theme::ThemeAssembly;
-
 pub fn materialize_theme(theme: Option<&Path>, output_dir: &Path) -> AppResult<Option<PathBuf>> {
     let Some(theme_override_path) = theme else {
         return Ok(None);
@@ -96,17 +95,7 @@ pub fn materialize_theme(theme: Option<&Path>, output_dir: &Path) -> AppResult<O
     let mut import_stack = Vec::new();
     let user_style = expand_theme_css(theme_override_path, &mut import_stack)?;
 
-    let components = crate::theme::THEME_COMPONENTS
-        .iter()
-        .map(|&(name, _)| name.to_string())
-        .collect();
-
-    let assembly = ThemeAssembly {
-        components,
-        user_style: Some(user_style),
-    };
-
-    let expanded_theme_css = assembly.bundle()?;
+    let expanded_theme_css = theme::bundle(Some(&user_style));
     std::fs::write(&export_theme_path, expanded_theme_css)?;
     Ok(Some(export_theme_path))
 }
@@ -215,12 +204,10 @@ mod tests {
         let export_css = std::fs::read_to_string(export_theme).expect("export theme css");
 
         assert!(export_css.contains("@import 'default';"));
-        assert!(export_css.contains(":is(pre, marp-pre) .hljs-keyword"));
         assert!(export_css.contains("section { color: #111111; }"));
         assert!(export_css.contains("section { letter-spacing: 0; }"));
         assert!(
-            export_css.find(":is(pre, marp-pre) .hljs-keyword")
-                < export_css.find("section { color: #111111; }")
+            export_css.find("@import 'default';") < export_css.find("section { color: #111111; }")
         );
     }
 

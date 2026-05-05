@@ -5,7 +5,7 @@ use crate::deck_layout;
 use crate::deck_layout::DeckLayout;
 use crate::error::{AppError, AppResult};
 
-const THEME_CSS: &str = include_str!("../assets/theme.css.tpl");
+const THEME_CSS: &str = include_str!("../assets/scaffold.css.tpl");
 const MANUSCRIPT_TEMPLATE: &str = include_str!("../assets/manuscript.md.tpl");
 const SLIDES_TEMPLATE: &str = include_str!("../assets/slides.md.tpl");
 

@@ -5,7 +5,6 @@ use crate::deck_layout;
 use crate::deck_layout::DeckLayout;
 use crate::error::{AppError, AppResult};
 
-const THEME_CSS: &str = include_str!("../assets/theme.css.tpl");
 const MANUSCRIPT_TEMPLATE: &str = include_str!("../assets/manuscript.md.tpl");
 const SLIDES_TEMPLATE: &str = include_str!("../assets/slides.md.tpl");
 
@@ -21,7 +20,7 @@ pub fn run(root: &Path, id: &str) -> AppResult<DeckLayout> {
     fs::create_dir_all(deck_dir.join("artifacts"))?;
     fs::write(deck_dir.join("assets").join(".gitkeep"), "")?;
     fs::write(deck_dir.join("artifacts").join(".gitkeep"), "")?;
-    fs::write(deck_dir.join("theme.css"), THEME_CSS)?;
+    fs::write(deck_dir.join("theme.css"), "")?;
 
     let manuscript = MANUSCRIPT_TEMPLATE.replace("__TITLE__", &title);
     fs::write(deck_dir.join("manuscript.md"), manuscript)?;

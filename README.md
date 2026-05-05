@@ -19,9 +19,7 @@ src/
 - `decks/<deck-id>/theme.css` stores deck-local overrides layered on the shared theme.
 - `decks/<deck-id>/assets/` stores files that belong only to that deck.
 - `decks/<deck-id>/artifacts/` stores exported files for that deck.
-- `src/assets/default.css` stores the shared theme entrypoint used on export.
-- `src/assets/theme.css.tpl` stores the empty deck override scaffold copied by `create`.
-- `src/assets/css/` stores the shared category CSS used on export.
+- `src/assets/css/` stores the shared category CSS bundled into the exported theme at build time.
 
 ## Prerequisites
 

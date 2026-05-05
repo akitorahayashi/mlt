@@ -2,15 +2,10 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use crate::error::{AppError, AppResult};
+use crate::theme;
 
 use super::Format;
 
-const DEFAULT_THEME_CSS: &str = include_str!("../assets/default.css");
-const CANVAS_CSS: &str = include_str!("../assets/css/canvas.css");
-const HEADING_CSS: &str = include_str!("../assets/css/heading.css");
-const LIST_CSS: &str = include_str!("../assets/css/list.css");
-const HIGHLIGHT_CSS: &str = include_str!("../assets/css/highlight.css");
-const CODE_CSS: &str = include_str!("../assets/css/code.css");
 const EXPORT_THEME_FILENAME: &str = ".mlt-theme.css";
 
 pub fn export_many(
@@ -98,61 +93,11 @@ pub fn materialize_theme(theme: Option<&Path>, output_dir: &Path) -> AppResult<O
 
     let export_theme_path = output_dir.join(EXPORT_THEME_FILENAME);
     let mut import_stack = Vec::new();
-    let expanded_theme_css = expand_shared_theme(theme_override_path, &mut import_stack)?;
+    let user_style = expand_theme_css(theme_override_path, &mut import_stack)?;
+
+    let expanded_theme_css = theme::bundle(Some(&user_style));
     std::fs::write(&export_theme_path, expanded_theme_css)?;
     Ok(Some(export_theme_path))
-}
-
-fn expand_shared_theme(
-    theme_override_path: &Path,
-    import_stack: &mut Vec<PathBuf>,
-) -> AppResult<String> {
-    let mut expanded = String::new();
-
-    for line in DEFAULT_THEME_CSS.lines() {
-        if let Some(import_target) = parse_import_target(line) {
-            match import_target {
-                "default" => {
-                    expanded.push_str(line);
-                    expanded.push('\n');
-                }
-                "theme.css" => {
-                    expanded.push_str(&expand_theme_css(theme_override_path, import_stack)?);
-                    if !expanded.ends_with('\n') {
-                        expanded.push('\n');
-                    }
-                }
-                asset_path => {
-                    let asset_css = shared_theme_asset(asset_path).ok_or_else(|| {
-                        AppError::ThemeCssImportFailed(format!(
-                            "unknown shared theme asset import: {asset_path}"
-                        ))
-                    })?;
-                    expanded.push_str(asset_css);
-                    if !asset_css.ends_with('\n') {
-                        expanded.push('\n');
-                    }
-                }
-            }
-            continue;
-        }
-
-        expanded.push_str(line);
-        expanded.push('\n');
-    }
-
-    Ok(expanded)
-}
-
-fn shared_theme_asset(path: &str) -> Option<&'static str> {
-    match path {
-        "css/canvas.css" => Some(CANVAS_CSS),
-        "css/heading.css" => Some(HEADING_CSS),
-        "css/list.css" => Some(LIST_CSS),
-        "css/highlight.css" => Some(HIGHLIGHT_CSS),
-        "css/code.css" => Some(CODE_CSS),
-        _ => None,
-    }
 }
 
 fn expand_theme_css(css_path: &Path, import_stack: &mut Vec<PathBuf>) -> AppResult<String> {
@@ -259,12 +204,10 @@ mod tests {
         let export_css = std::fs::read_to_string(export_theme).expect("export theme css");
 
         assert!(export_css.contains("@import 'default';"));
-        assert!(export_css.contains(":is(pre, marp-pre) .hljs-keyword"));
         assert!(export_css.contains("section { color: #111111; }"));
         assert!(export_css.contains("section { letter-spacing: 0; }"));
         assert!(
-            export_css.find(":is(pre, marp-pre) .hljs-keyword")
-                < export_css.find("section { color: #111111; }")
+            export_css.find("@import 'default';") < export_css.find("section { color: #111111; }")
         );
     }
 

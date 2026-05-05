@@ -24,9 +24,13 @@ fn main() {
 
         for entry in entries {
             let path = entry.path();
-            if path.is_file() && path.extension().map_or(false, |ext| ext == "css") {
+            if path.is_file() && path.extension().is_some_and(|ext| ext == "css") {
                 let filename = path.file_name().unwrap().to_str().unwrap().to_string();
-                let relative_path = path.strip_prefix("src/assets/css").unwrap().display().to_string();
+                let relative_path = path
+                    .strip_prefix("src/assets/css")
+                    .unwrap()
+                    .display()
+                    .to_string();
                 // Replace backslashes on windows just in case, though strip_prefix from forward-slash path usually is fine.
                 let relative_path = relative_path.replace("\\", "/");
                 components.push(format!("    (\"{}\", include_str!(concat!(env!(\"CARGO_MANIFEST_DIR\"), \"/src/assets/css/{}\"))),", filename, relative_path));

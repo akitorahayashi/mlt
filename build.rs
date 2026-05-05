@@ -9,10 +9,7 @@ fn main() {
     let css_dir = Path::new("src/assets/css");
     let mut components = Vec::new();
 
-    let mut entries: Vec<_> = fs::read_dir(css_dir)
-        .unwrap()
-        .map(|r| r.unwrap())
-        .collect();
+    let mut entries: Vec<_> = fs::read_dir(css_dir).unwrap().map(|r| r.unwrap()).collect();
     entries.sort_by_key(|e| e.path());
 
     for entry in entries {

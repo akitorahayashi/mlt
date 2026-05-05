@@ -20,8 +20,6 @@ pub enum ThemeError {
 
 impl ThemeAssembly {
     pub fn bundle(&self) -> Result<String, ThemeError> {
-
-
         let template = include_str!("../assets/theme.css.tpl");
 
         // Find the components to bundle

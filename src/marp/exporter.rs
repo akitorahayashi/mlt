@@ -109,9 +109,9 @@ pub fn materialize_theme(theme: Option<&Path>, output_dir: &Path) -> AppResult<O
         user_style: Some(expanded_user_css),
     };
 
-    let bundled_css = assembly.bundle().map_err(|e| {
-        AppError::ThemeCssImportFailed(e.to_string())
-    })?;
+    let bundled_css = assembly
+        .bundle()
+        .map_err(|e| AppError::ThemeCssImportFailed(e.to_string()))?;
 
     std::fs::write(&export_theme_path, bundled_css)?;
     Ok(Some(export_theme_path))

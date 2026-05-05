@@ -3,6 +3,7 @@ pub mod cli;
 pub mod deck_layout;
 pub mod error;
 pub mod marp;
+pub mod theme;
 
 pub fn run() {
     cli::run();

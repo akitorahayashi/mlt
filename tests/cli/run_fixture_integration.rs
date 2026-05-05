@@ -48,7 +48,7 @@ fn fixture_theme_materializes_with_custom_styles() {
 
     // Validate that shared theme is still present
     assert!(
-        css.contains("@import 'default'"),
+        css.contains("/* @theme mlt-default */"),
         "materialized CSS should reference default theme"
     );
 }

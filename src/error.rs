@@ -22,4 +22,6 @@ pub enum AppError {
     MarpCommandFailed(String),
     #[error("Theme CSS import failed: {0}")]
     ThemeCssImportFailed(String),
+    #[error("Theme assembly error: {0}")]
+    ThemeAssembly(#[from] crate::theme::ThemeError),
 }

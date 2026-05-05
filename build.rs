@@ -29,7 +29,10 @@ fn main() {
                 let absolute_path = fs::canonicalize(&path).unwrap();
                 let path_str = absolute_path.to_str().unwrap().replace("\\", "\\\\");
 
-                components.push(format!("(\"{}\", include_str!(\"{}\"))", file_name, path_str));
+                components.push(format!(
+                    "(\"{}\", include_str!(\"{}\"))",
+                    file_name, path_str
+                ));
             }
         }
     }

@@ -22,7 +22,10 @@ pub struct ThemeAssembly {
 impl ThemeAssembly {
     pub fn new() -> Self {
         Self {
-            components: COMPONENTS.iter().map(|(name, _)| name.to_string()).collect(),
+            components: COMPONENTS
+                .iter()
+                .map(|(name, _)| name.to_string())
+                .collect(),
             user_style: None,
         }
     }
